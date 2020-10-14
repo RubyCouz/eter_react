@@ -1,23 +1,23 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+// import composants
+import Navbar from './components/Navbar/Navbar'
+import CarouselComponent from './components/Carousel/CarouselComponent'
+import SocialNetwork from './components/SocialNetwork/SocialNetwork'
 
 function App() {
   return (
     <div className="App">
+        {/*composant navbar*/}
+      <Navbar />
+      {/*composant carousel*/}
+
+
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+          <CarouselComponent />
+          {/*composant réseau social*/}
+          <SocialNetwork />
+
       </header>
     </div>
   );
