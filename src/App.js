@@ -12,11 +12,11 @@ function App() {
       <Navbar />
       {/*composant carousel*/}
 
+        <CarouselComponent />
+        {/*composant réseau social*/}
+        <SocialNetwork />
+      <header>
 
-      <header className="App-header">
-          <CarouselComponent />
-          {/*composant réseau social*/}
-          <SocialNetwork />
 
       </header>
     </div>

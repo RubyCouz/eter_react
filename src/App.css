@@ -1,15 +1,29 @@
+* {-moz-box-sizing: border-box; box-sizing: border-box;}
+html {
+  height: 100%;
+}
+body {
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+}
 .App {
-  text-align: center;
+  /*text-align: center;*/
+  position: relative !important;
+  min-height: 100% !important;
 }
+/* TODO A CHANGER TROUVER EMPLACEMENT CORRECT */
+/*.makeStyles-root-13 {*/
+/*  position: fixed !important;*/
+/*  bottom: 1em !important;*/
+/*  right: 1em !important;*/
+/*}*/
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
 
 .MuiFab-primary {
   background-color: blueviolet !important;
 }
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
