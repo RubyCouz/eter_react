@@ -14,22 +14,7 @@ import DialogActions from "@material-ui/core/DialogActions";
 import Button from "@material-ui/core/Button";
 import {makeStyles} from "@material-ui/core/styles";
 
-const [inputValue, setInputValue] = React.useState({
-    email: '',
-    password: '',
-    showPassword: false,
-});
-const handleChange = (prop) => (event) => {
-    setInputValue({...inputValue, [prop]: event.target.value});
-};
 
-const handleClickShowPassword = () => {
-    setInputValue({...inputValue, showPassword: !inputValue.showPassword});
-};
-
-const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-};
 
 export default function LogInForm() {
     const useStyles = makeStyles((theme) => ({
@@ -39,6 +24,22 @@ export default function LogInForm() {
         })
     )
     const classes = useStyles();
+    const [inputValue, setInputValue] = React.useState({
+        email: '',
+        password: '',
+        showPassword: false,
+    });
+    const handleChange = (prop) => (event) => {
+        setInputValue({...inputValue, [prop]: event.target.value});
+    };
+
+    const handleClickShowPassword = () => {
+        setInputValue({...inputValue, showPassword: !inputValue.showPassword});
+    };
+
+    const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+        event.preventDefault();
+    };
     const [setOpen] = React.useState(false);
 
     const handleClose = () => {
@@ -69,16 +70,6 @@ export default function LogInForm() {
                         />
                     </FormControl>
                 </Grid>
-                {/*<TextField*/}
-                {/*    autoFocus*/}
-                {/*    margin="dense"*/}
-                {/*    id="email"*/}
-                {/*    label="Adresse Email"*/}
-                {/*    type="email"*/}
-                {/*    name={'user'}*/}
-                {/*    variant="outlined"*/}
-                {/*    fullWidth*/}
-                {/*/>*/}
                 <Grid item sm={12}>
                     <FormControl variant="outlined" className={classes.inputClass}>
                         <InputLabel htmlFor="password">Password</InputLabel>
