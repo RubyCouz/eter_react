@@ -8,6 +8,7 @@ import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import LogInForm from "./LogInForm/LogInForm";
+import Signin from "./SignInForm/SignInForm";
 
 function TabPanel(props) {
     const {children, value, index, ...other} = props;
@@ -74,8 +75,8 @@ export default function FullWidthTabs() {
                 variant="fullWidth"
                 aria-label="full width tabs example"
             >
-                <Tab label="Item One" {...a11yProps(0)} />
-                <Tab label="Item Two" {...a11yProps(1)} />
+                <Tab label="Connexion" {...a11yProps(0)} />
+                <Tab label="Inscription" {...a11yProps(1)} />
             </Tabs>
         </AppBar>
             <SwipeableViews
@@ -87,7 +88,7 @@ export default function FullWidthTabs() {
                     <LogInForm/>
                 </TabPanel>
                 <TabPanel value={value} index={1} dir={theme.direction}>
-                    Item Two
+                    <Signin />
                 </TabPanel>
             </SwipeableViews>
 
