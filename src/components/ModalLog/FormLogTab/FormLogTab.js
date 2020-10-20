@@ -91,8 +91,6 @@ export default function FullWidthTabs() {
                     <Signin />
                 </TabPanel>
             </SwipeableViews>
-
-
         </div>
     );
 }

@@ -45,6 +45,13 @@ export default function LogInForm() {
     const handleClose = () => {
         // setOpen(false);
     };
+    const axios = require('axios').default;
+    const handleClick = () => {
+        alert(inputValue.email + ', ' + inputValue.password)
+        axios
+            .get('./eter_api/public/index.php/SecurityController/login')
+            .then(response => console.log(response) )
+    }
     return (
     <div>
         <DialogTitle id="alert-dialog-slide-title">{"Connexion"}</DialogTitle>
@@ -100,12 +107,10 @@ export default function LogInForm() {
             <Button onClick={handleClose} color="primary">
                 Annuler
             </Button>
-            <Button onClick={handleClose} color="primary">
+            <Button onClick={handleClick} color="primary">
                 Se connecter
             </Button>
         </DialogActions>
-
-
     </div>
     )
 }
