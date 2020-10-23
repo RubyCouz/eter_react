@@ -56,7 +56,6 @@ export default function FullWidthTabs() {
     const classes = useStyles();
     const theme = useTheme();
 
-
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
@@ -66,19 +65,23 @@ export default function FullWidthTabs() {
     };
 
     return (
-        <div className={classes.root}><AppBar position="static" color="default">
-            <Tabs
-                value={value}
-                onChange={handleChange}
-                indicatorColor="primary"
-                textColor="primary"
-                variant="fullWidth"
-                aria-label="full width tabs example"
+        <div className={classes.root}>
+            <AppBar 
+                position="static"
+                color="default"
             >
-                <Tab label="Connexion" {...a11yProps(0)} />
-                <Tab label="Inscription" {...a11yProps(1)} />
-            </Tabs>
-        </AppBar>
+                <Tabs
+                    value={value}
+                    onChange={handleChange}
+                    indicatorColor="primary"
+                    textColor="primary"
+                    variant="fullWidth"
+                    aria-label="full width tabs example"
+                >
+                    <Tab label="Connexion" {...a11yProps(0)} />
+                    <Tab label="Inscription" {...a11yProps(1)} />
+                </Tabs>
+            </AppBar>
             <SwipeableViews
                 axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
                 index={value}
@@ -88,7 +91,7 @@ export default function FullWidthTabs() {
                     <LogInForm/>
                 </TabPanel>
                 <TabPanel value={value} index={1} dir={theme.direction}>
-                    <Signin />
+                    <Signin/>
                 </TabPanel>
             </SwipeableViews>
         </div>

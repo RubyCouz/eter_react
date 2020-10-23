@@ -13,6 +13,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogActions from "@material-ui/core/DialogActions";
 import Button from "@material-ui/core/Button";
 import {makeStyles} from "@material-ui/core/styles";
+import {ModalContext} from "../../ModalContext";
 
 
 
@@ -40,11 +41,10 @@ export default function SignInForm() {
     const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
     };
-    let [setOpen] = React.useState(false);
 
-    const handleClose = () => {
-        setOpen={setOpen}
-    };
+    const {handleClose} = React.useContext(ModalContext);
+
+
     return (
         <div>
             <DialogTitle id="alert-dialog-slide-title">{"Inscription"}</DialogTitle>
@@ -52,16 +52,21 @@ export default function SignInForm() {
             <DialogContent>
                 <Grid container spacing={2}>
                     <Grid item sm={12}>
-                        <FormControl variant="outlined" className={classes.inputClass}>
+                        <FormControl 
+                            variant="outlined"
+                            className={classes.inputClass}
+                        >
                             <InputLabel htmlFor="email">Email</InputLabel>
                             <OutlinedInput
                                 label="Email"
                                 id="email"
                                 value={inputValue.email}
                                 onChange={handleChange('email')}
-                                endAdornment={<InputAdornment position="end">
-                                    <AccountCircleIcon/>
-                                </InputAdornment>}
+                                endAdornment={
+                                    <InputAdornment position="end">
+                                        <AccountCircleIcon/>
+                                    </InputAdornment>
+                                }
                                 aria-describedby="outlined-weight-helper-text"
                                 inputProps={{
                                     'aria-label': 'weight',
@@ -71,8 +76,15 @@ export default function SignInForm() {
                         </FormControl>
                     </Grid>
                     <Grid item sm={12}>
-                        <FormControl variant="outlined" className={classes.inputClass}>
-                            <InputLabel htmlFor="password">Password</InputLabel>
+                        <FormControl
+                            variant="outlined"
+                            className={classes.inputClass}
+                        >
+                            <InputLabel
+                                htmlFor="password"
+                            >
+                                Password
+                            </InputLabel>
                             <OutlinedInput
                                 id="outlined-adornment-password"
                                 type={inputValue.showPassword ? 'text' : 'password'}

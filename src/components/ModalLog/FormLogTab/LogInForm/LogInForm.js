@@ -13,6 +13,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogActions from "@material-ui/core/DialogActions";
 import Button from "@material-ui/core/Button";
 import {makeStyles} from "@material-ui/core/styles";
+import {ModalContext} from "../../ModalContext"
 
 
 
@@ -40,11 +41,7 @@ export default function LogInForm() {
     const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
     };
-    const [setOpen] = React.useState(false);
 
-    const handleClose = () => {
-        // setOpen(false);
-    };
     const axios = require('axios').default;
     const handleClick = () => {
         alert(inputValue.email + ', ' + inputValue.password)
@@ -52,6 +49,9 @@ export default function LogInForm() {
             .get('./eter_api/public/index.php/SecurityController/login')
             .then(response => console.log(response) )
     }
+    
+    const {handleClose} = React.useContext(ModalContext);
+
     return (
     <div>
         <DialogTitle id="alert-dialog-slide-title">{"Connexion"}</DialogTitle>
