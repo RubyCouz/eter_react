@@ -135,7 +135,7 @@ export default function Navbar() {
                         variant="h6" 
                         noWrap
                       >
-                        Eterl
+                        EterelZ
                       </Typography>
                     </Box>
                     <Box>
