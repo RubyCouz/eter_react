@@ -1,9 +1,8 @@
 import React from 'react';
-import {makeStyles} from "@material-ui/core/styles";
-import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import Slide from '@material-ui/core/Slide';
 import FormLogTab from "./FormLogTab/FormLogTab";
+import { useHistory } from "react-router-dom";
 import  { ModalContext } from "./ModalContext"
 // import { TransitionProps } from '@material-ui/core/transitions';
 
@@ -15,29 +14,17 @@ const Transition = React.forwardRef(function Transition(
 });
 
 export default function AlertDialogSlide() {
-    const useStyles = makeStyles((theme) => ({
-            button: {
-                color: 'white',
-                border: '1px solid white'
-            },
-            input: {
-                width: '100%'
-            },
-        })
-    )
-    const classes = useStyles();
+    let history = useHistory();
 
     const [open, setOpen] = React.useState(true);
 
     const handleClose = () => {
         setOpen(false);
+        history.goBack()
     }
 
     return (
         <div>
-            <Button className={classes.button} variant="outlined" color="primary" onClick={handleClickOpen}>
-                Connexion
-            </Button>
             <ModalContext.Provider value={{handleClose:handleClose}}>
                 <Dialog
                     open={open}
