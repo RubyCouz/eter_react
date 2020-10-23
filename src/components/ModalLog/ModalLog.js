@@ -4,6 +4,7 @@ import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import Slide from '@material-ui/core/Slide';
 import FormLogTab from "./FormLogTab/FormLogTab";
+import  { ModalContext } from "./ModalContext"
 // import { TransitionProps } from '@material-ui/core/transitions';
 
 const Transition = React.forwardRef(function Transition(
@@ -25,33 +26,30 @@ export default function AlertDialogSlide() {
         })
     )
     const classes = useStyles();
-    const [open, setOpen] = React.useState(false);
 
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
+    const [open, setOpen] = React.useState(true);
 
-    // const handleClose = () => {
-    //     setOpen(false);
-    // };
+    const handleClose = () => {
+        setOpen(false);
+    }
 
     return (
         <div>
             <Button className={classes.button} variant="outlined" color="primary" onClick={handleClickOpen}>
                 Connexion
             </Button>
-            <Dialog
-                open={open}
-                TransitionComponent={Transition}
-                keepMounted
-                // onClose={handleClose}
-                aria-labelledby="alert-dialog-slide-title"
-                aria-describedby="alert-dialog-slide-description"
-            >
-                <FormLogTab />
-
-                {/*</form>*/}
-            </Dialog>
+            <ModalContext.Provider value={{handleClose:handleClose}}>
+                <Dialog
+                    open={open}
+                    TransitionComponent={Transition}
+                    keepMounted
+                    onClose={ handleClose }
+                    aria-labelledby="alert-dialog-slide-title"
+                    aria-describedby="alert-dialog-slide-description"
+                >
+                    <FormLogTab/>
+                </Dialog>
+            </ModalContext.Provider>
         </div>
     );
 }
