@@ -14,6 +14,7 @@ import DialogActions from "@material-ui/core/DialogActions";
 import Button from "@material-ui/core/Button";
 import {makeStyles} from "@material-ui/core/styles";
 import {ModalContext} from "../../ModalContext"
+import { AccountContext } from '../../../../Context/AccountContext'
 
 
 export default function LogInForm() {
@@ -41,8 +42,31 @@ export default function LogInForm() {
         event.preventDefault();
     };
 
+    const {ModalAlertData, ModalAlertOpen, SetJWT} = React.useContext(AccountContext);
 
-
+    const axios = require('axios').default;
+    
+    const handleClick = () => {
+        handleClose();
+        axios({
+            data: {
+                email: inputValue.email,
+                password: inputValue.password
+            },
+            method: 'post',
+            url: 'https://localhost:8000/api/login',
+        })
+        .then(function (reponse) {
+            ModalAlertData("Token sauvegarder")
+            SetJWT(reponse.data.token)
+            ModalAlertOpen()
+        })
+        .catch(function (error) {
+            ModalAlertData("Pas de token")
+            ModalAlertOpen()
+        });
+    }
+    
     
     const {handleClose} = React.useContext(ModalContext);
 
@@ -67,7 +91,7 @@ export default function LogInForm() {
                                 inputProps={{
                                     'aria-label': 'weight',
                                 }}
-                                labelWidth={70}
+                               labelWidth={70}
                             />
                         </FormControl>
                     </Grid>
@@ -101,7 +125,7 @@ export default function LogInForm() {
                 <Button onClick={handleClose} color="primary">
                     Annuler
                 </Button>
-                <Button color="primary">
+                <Button onClick={handleClick} color="primary">
                     Se connecter
                 </Button>
             </DialogActions>
