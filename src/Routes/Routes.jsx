@@ -1,9 +1,10 @@
 import React, { lazy } from "react"
-import {Switch, Route, Redirect}from "react-router-dom"
-
+import {Switch, Route, Redirect} from "react-router-dom"
+import PrivateRoute from "./PrivateRoute"
 const Home  = lazy( () => import("../Pages/Home/Home"));
 const Test  = lazy( () => import("../Pages/Test/Test"));
 const BackOffice = lazy(() => import('../Pages/BackOffice/BackOffice'))
+const Error404 = lazy(() => import('../Pages/Error404/Error404'))
 const AlertDialogSlide  = lazy( () => import('../components/ModalLog/ModalLog'));
 
 export default () => (
@@ -25,15 +26,16 @@ export default () => (
                     <Redirect to="/error404" />
                 </Switch>
             </Route>
-            <Route path="/admin">
+            <PrivateRoute path="/admin">
                 <BackOffice />
                 <Switch>
                     <Route path="/admin" exact />
                     <Route path="/admin/login" exact component={AlertDialogSlide} />
                     <Redirect to="/error404" />
                 </Switch>
-            </Route>
-            <Route path="/error404" exact>
+            </PrivateRoute>
+            <Route path="/error404">
+                <Error404 />
                 <Switch>
                     <Route path="/error404" exact />
                     <Route path="/error404/login" exact component={AlertDialogSlide} />
