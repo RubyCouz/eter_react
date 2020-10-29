@@ -14,8 +14,7 @@ import DialogActions from "@material-ui/core/DialogActions";
 import Button from "@material-ui/core/Button";
 import {makeStyles} from "@material-ui/core/styles";
 import {ModalContext} from "../../ModalContext";
-
-
+import { AccountContext } from '../../../../Context/AccountContext'
 
 export default function SignInForm() {
     const useStyles = makeStyles((theme) => ({
@@ -43,6 +42,29 @@ export default function SignInForm() {
     };
 
     const {handleClose} = React.useContext(ModalContext);
+
+
+    const {ModalAlertData, ModalAlertOpen} = React.useContext(AccountContext);
+
+    const axios = require('axios').default;
+    
+    const handleClick = () => {
+        handleClose();
+        axios(
+            {
+                data: {
+                    email: inputValue.email,
+                    password: inputValue.password
+                },
+                method: 'post',
+                url: 'https://localhost:8000/api/register',
+            }  
+        )
+        .then(function (reponse) {
+            ModalAlertData(reponse.data)
+            ModalAlertOpen()
+        })
+    }
 
 
     return (
@@ -112,12 +134,10 @@ export default function SignInForm() {
                 <Button onClick={handleClose} color="primary">
                     Annuler
                 </Button>
-                <Button onClick={handleClose} color="primary">
+                <Button onClick={handleClick} color="primary">
                     S'inscrire
                 </Button>
             </DialogActions>
-
-
         </div>
     )
 }
