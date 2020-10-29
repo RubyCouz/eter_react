@@ -14,7 +14,7 @@ class BackOffice extends Component {
 
     fetchMap(result) {
         let data = [];
-        result.map(val => {
+        result["hydra:member"].map(val => {
             data.push(<TableRow key={val.id}>
                     <TableCell>
                         {val.id}
@@ -29,7 +29,7 @@ class BackOffice extends Component {
     }
 
     componentDidMount() {
-        fetch('http://localhost:8000/api/eter_users')
+        fetch('https://localhost:8000/api/eter_users')
             .then((response) => {
                 return response.json()
             })
