@@ -7,8 +7,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Routes from './Routes/Routes';
 import { useState } from 'react';
 import { AccountContext } from './Context/AccountContext'
-import MuiAlert from '@material-ui/lab/Alert';
-import { Snackbar } from '@material-ui/core';
+import ModalAlert from './components/ModalAlert/ModalAlert'
 
 // import composants
 const Navbar = lazy( () => import('./Pages/Navbar/Navbar'));
@@ -48,12 +47,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
-
-
-
 function App() {
 
   const classes = useStyles();
@@ -71,23 +64,18 @@ function App() {
     setConnected(false);
   }
 
-
   //UseState pour la snackbar
   const [open, setOpen] = useState(false);
 
-  const handleSnackClick = () => {
+  const [snackData, setSnackData] = useState({
+      data: null,
+      severity: null
+  })
+
+  const setSnackDataFunction = (data) => {
+    setSnackData(data);
     setOpen(true);
   };
-
-  const handleSnackClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-
-    setOpen(false);
-  };
-
-  const [snackData, setSnackData] = useState("");
 
   return (
     <AccountContext.Provider 
@@ -96,17 +84,11 @@ function App() {
         SignIn: SignIn, 
         SignOut: SignOut,
         IsAdmin: admin,
-        ModalAlertOpen: handleSnackClick,
-        ModalAlertClose: handleSnackClose,
-        ModalAlertData: setSnackData,
+        ModalAlertSetData: setSnackDataFunction,
         JWT: token,
         SetJWT: setToken
       }}>
-      <Snackbar open={open} autoHideDuration={6000} onClose={handleSnackClose}>
-        <Alert onClose={handleSnackClose} severity="success">
-          {snackData}
-        </Alert>
-      </Snackbar>
+      <ModalAlert snackData={snackData} open={{value : open, setValue : setOpen}}  />
       <ThemeProvider theme={theme}>
         <div className={"App", classes.root}>
           <Router>

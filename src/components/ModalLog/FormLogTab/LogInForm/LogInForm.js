@@ -42,7 +42,7 @@ export default function LogInForm() {
         event.preventDefault();
     };
 
-    const {ModalAlertData, ModalAlertOpen, SetJWT} = React.useContext(AccountContext);
+    const {ModalAlertSetData, SetJWT} = React.useContext(AccountContext);
 
     const axios = require('axios').default;
     
@@ -57,13 +57,18 @@ export default function LogInForm() {
             url: 'https://localhost:8000/api/login',
         })
         .then(function (reponse) {
-            ModalAlertData("Token sauvegarder")
             SetJWT(reponse.data.token)
-            ModalAlertOpen()
+            ModalAlertSetData({
+                data:"Token sauvegarder",
+                severity: "success"
+            })
         })
         .catch(function (error) {
-            ModalAlertData("Pas de token")
-            ModalAlertOpen()
+            console.log(error.reponse)
+            ModalAlertSetData({
+                data:"Pas de token",
+                severity: "error"
+            })
         });
     }
     
