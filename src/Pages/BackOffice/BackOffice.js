@@ -1,65 +1,79 @@
-import React, {Component} from "react"
+import React, {useState, useEffect, useContext} from "react"
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 import TableContainer from "@material-ui/core/TableContainer";
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
+import { AccountContext } from '../../Context/AccountContext'
+import { Typography } from "@material-ui/core";
+
+export default function BackOffice() {
+
+    const [state, setState] = useState(0)
+    
+
+    const {JWT} = useContext(AccountContext);
+
+    useEffect( () => {
+        function fetchMap(result) {
+            let data = [];
+            console.log(result)
+            if (result["@type"] === "hydra:Collection")
+            {
+                result["hydra:member"].map(val => {
+                    data.push(<TableRow key={val.id}>
+                            <TableCell>
+                                {val.id}
+                            </TableCell>
+                            <TableCell>
+                                {val.userLogin}
+                            </TableCell>
+                        </TableRow>
+                    )
+                })
+            } else {
+                data.push(<Typography>Rien !</Typography>)
+            }
+            setState(data);
+        }
 
 
-class BackOffice extends Component {
-    state = {
-        post: {}
-    }
-
-    fetchMap(result) {
-        let data = [];
-        result["hydra:member"].map(val => {
-            data.push(<TableRow key={val.id}>
-                    <TableCell>
-                        {val.id}
-                    </TableCell>
-                    <TableCell>
-                        {val.userLogin}
-                    </TableCell>
-                </TableRow>
-            )
+        fetch('https://localhost:8000/api/eter_users', {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + JWT
+            }
         })
-        this.setState({list: data});
-    }
+        .then((response) => {
+            return response.json()
+        })
+        .then((result) => {
+            fetchMap(result)
+        })
+    }, [])
+    
+   
 
-    componentDidMount() {
-        fetch('https://localhost:8000/api/eter_users')
-            .then((response) => {
-                return response.json()
-            })
-            .then((result) => {
-                this.fetchMap(result)
-            })
-    }
-
-    render() {
-        return (
-            <div>
-                <TableContainer>
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>id</TableCell>
-                                <TableCell>login</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {this.state.list}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-            </div>
-        )
-    }
+    return (
+        <div>
+            <TableContainer>
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>id</TableCell>
+                            <TableCell>login</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {state}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+        </div>
+    )
 }
 
-export default BackOffice
 
 
 // const useStyles = makeStyles({
