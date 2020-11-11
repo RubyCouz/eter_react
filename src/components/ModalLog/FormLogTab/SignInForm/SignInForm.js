@@ -51,59 +51,37 @@ export default function SignInForm() {
     
     const handleClick = () => {
         handleClose();
-        axios(
-            {
-                data: {
-                    email: inputValue.email,
-                    password: inputValue.password
-                },
-                method: 'post',
-                url: 'https://localhost:8000/api/register',
-            }  
-        )
-        .then(function (reponse) {
+        axios({
+            data: {
+                query: `mutation{
+                    createEterUser(
+                        input:{
+                            userLogin: "${inputValue.email}"
+                            userMail: "${inputValue.email}"
+                            userPassword: "${inputValue.password}"
+                            userDiscord: "${inputValue.email}"
+                        }
+                    )
+                    {
+                        eterUser{userMail}
+                    }
+                }`
+            },
+            method: 'post',
+            url: 'https://localhost:8000/api/graphql',
+        })
+        .then( (reponse) => {
+            console.log("blabla")
+            console.log(reponse.data)
             ModalAlertSetData({
-                data: reponse.data,
-                severity: "success"
+                severity: "success",
+                data: <Typography>Le compte ${reponse.data.data.createEterUser.eterUser.userMail} a était crée</Typography>
             })
         })
-        .catch(function (error) {
+        .catch( () => {
             ModalAlertSetData({
                 severity: "error",
-                data: <List className={classes.root}>
-                    <ListItem alignItems="flex-start">
-                        <ListItemText
-                            secondary={
-                            <React.Fragment>
-                                <Typography
-                                component="span"
-                                variant="body2"
-                                color="textPrimary"
-                                >
-                                Erreur:
-                                </Typography>
-                                {error.response.data.status}
-                            </React.Fragment>
-                            }
-                        />
-                    </ListItem>
-                    <ListItem alignItems="flex-start">
-                        <ListItemText
-                            secondary={
-                            <React.Fragment>
-                                <Typography
-                                component="span"
-                                variant="body2"
-                                color="textPrimary"
-                                >
-                                Détail:
-                                </Typography>
-                                {error.response.data.detail}
-                            </React.Fragment>
-                            }
-                        />
-                    </ListItem>
-                </List>
+                data: <Typography>Le compte n'a pas pu êtres crée</Typography>
             })
         })
     }
