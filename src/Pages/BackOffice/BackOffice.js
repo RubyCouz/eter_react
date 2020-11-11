@@ -19,15 +19,15 @@ export default function BackOffice() {
         function fetchMap(result) {
             let data = [];
             console.log(result)
-            if (result["@type"] === "hydra:Collection")
+            if (result.data)
             {
-                result["hydra:member"].map(val => {
+                result.data.eterUsers.edges.map(val => {
                     data.push(<TableRow key={val.id}>
                             <TableCell>
-                                {val.id}
+                                {val.node.userLogin}
                             </TableCell>
                             <TableCell>
-                                {val.userLogin}
+                                {val.node.userRole}
                             </TableCell>
                         </TableRow>
                     )
@@ -39,11 +39,27 @@ export default function BackOffice() {
         }
 
 
-        fetch('https://localhost:8000/api/eter_users', {
-            method: 'GET',
+        fetch('https://localhost:8000/api/graphql', {
+            body:JSON.stringify({query: `query{
+                    eterUsers{
+                    edges{
+                      node{
+                        userLogin
+                        userRole
+                      }
+                    }
+                  }
+                }`
+                }),
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+              },
+            /*
             headers: {
                 'Authorization': 'Bearer ' + JWT
-            }
+            }*/
         })
         .then((response) => {
             return response.json()
@@ -61,8 +77,8 @@ export default function BackOffice() {
                 <Table>
                     <TableHead>
                         <TableRow>
-                            <TableCell>id</TableCell>
-                            <TableCell>login</TableCell>
+                            <TableCell>Login</TableCell>
+                            <TableCell>Role</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
