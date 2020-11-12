@@ -19,8 +19,7 @@ export default function BackOffice() {
         function fetchMap(result) {
             let data = [];
             console.log(result)
-            if (result.data)
-            {
+            if (!result.errors && result.data) {
                 result.data.eterUsers.edges.map(val => {
                     data.push(<TableRow key={val.id}>
                             <TableCell>
@@ -40,26 +39,24 @@ export default function BackOffice() {
 
 
         fetch('https://localhost:8000/api/graphql', {
-            body:JSON.stringify({query: `query{
+            body:JSON.stringify({query: `
+                query{
                     eterUsers{
-                    edges{
-                      node{
-                        userLogin
-                        userRole
-                      }
+                        edges{
+                            node{
+                                userLogin
+                                userRole
+                            }
+                        }
                     }
-                  }
                 }`
                 }),
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
-              },
-            /*
-            headers: {
                 'Authorization': 'Bearer ' + JWT
-            }*/
+            }
         })
         .then((response) => {
             return response.json()
