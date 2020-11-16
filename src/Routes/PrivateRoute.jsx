@@ -1,16 +1,16 @@
 import React from "react"
 import { Route, Redirect } from 'react-router-dom';
-import { AccountContext } from "../Context/AccountContext"
+import { useCookies } from 'react-cookie'
 
 export default function PrivateRoute({ children, ...rest }) {
 
-  const { JWT } = React.useContext( AccountContext );
+  const [cookies, setCookie] = useCookies(['auth']);
 
   return (
     <Route
       {...rest}
       render={({ location }) =>
-        JWT ? (
+        cookies.auth != undefined ? (
           children
         ) : (
           <Redirect
