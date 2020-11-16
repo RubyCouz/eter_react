@@ -1,18 +1,28 @@
-import React, {useState, useEffect, useContext} from "react"
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableRow from '@material-ui/core/TableRow';
-import TableContainer from "@material-ui/core/TableContainer";
-import Table from "@material-ui/core/Table";
-import TableHead from "@material-ui/core/TableHead";
-import { AccountContext } from '../../Context/AccountContext'
+import {
+    useState,
+    useEffect,
+} from 'react'
+
+import {
+    TableContainer,
+    Table,
+    TableHead,
+    TableBody,
+    TableRow,
+    TableCell,
+} from '@material-ui/core'
+
+import {
+    useCookies,
+} from 'react-cookie'
 
 export default function BackOffice() {
 
-    const [state, setState] = useState(0)
+    const [state, setState] = useState()
     
-
-    const {JWT} = useContext(AccountContext);
+    const [cookies, setCookie] = useCookies(['auth']);
+//    token = cookies.auth.token
+//    refresh_token = cookies.auth.refresh_token  
 
     useEffect( () => {
         function fetchMap(result) {
@@ -65,11 +75,12 @@ export default function BackOffice() {
                     }
                 }`
                 }),
+            //credentials: "include",
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
-                'Authorization': 'Bearer ' + JWT
+                'Authorization': 'Bearer ' + cookies.auth.token
             }
         })
         .then((response) => {
