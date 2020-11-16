@@ -6,7 +6,6 @@ import TableContainer from "@material-ui/core/TableContainer";
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
 import { AccountContext } from '../../Context/AccountContext'
-import { Typography } from "@material-ui/core";
 
 export default function BackOffice() {
 
@@ -18,10 +17,13 @@ export default function BackOffice() {
     useEffect( () => {
         function fetchMap(result) {
             let data = [];
-            console.log(result)
+
             if (!result.errors && result.data) {
                 result.data.eterUsers.edges.map(val => {
-                    data.push(<TableRow key={val.id}>
+                    data.push(
+                        <TableRow
+                            key={val.node.userLogin}
+                        >
                             <TableCell>
                                 {val.node.userLogin}
                             </TableCell>
@@ -32,8 +34,20 @@ export default function BackOffice() {
                     )
                 })
             } else {
-                data.push(<Typography>Rien !</Typography>)
+                data.push(
+                    <TableRow
+                        key={"rien"}
+                    >
+                        <TableCell
+                            colSpan={2}
+                            align="center"
+                        >
+                            Rien !
+                        </TableCell>
+                    </TableRow>
+                )
             }
+            
             setState(data);
         }
 
