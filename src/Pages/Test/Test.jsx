@@ -2,39 +2,35 @@ import React from "react"
 import { Typography, Button, Grid } from "@material-ui/core"
 import { useHistory, NavLink } from "react-router-dom"
 import { AccountContext } from '../../Context/AccountContext'
+import { useCookies } from 'react-cookie'
 
 export default function Test() {
     let history = useHistory();
 
-
-
-    //Utilisation du tokken et utilisation
-
-    const {SetJWT, JWT } = React.useContext(AccountContext);
-
-    const deconnection = () => {
-        SetJWT(null)
-    }
-
-    const connection = () => {
-        SetJWT("blabla")
-    }
-
+    //Hook Tokken
     function backHome() {
         history.push("/")
     }
 
+    const [cookies, setCookie] = useCookies(['auth']);
+
+    let token = "Aucune données"
+    let refreshToken = "Aucune données"
+
+    if (cookies.auth) {
+        token = cookies.auth.token ?? cookies.auth.token
+
+        refreshToken = cookies.auth.refresh_token ?? cookies.auth.refresh_token
+    }
 
 
-
-    let message = JWT ? "Connecter": "Deconnecter"
     return(
 
         <Grid
-        container
-        direction="column"
-        justify="center"
-        alignItems="center"
+            container
+            direction="column"
+            justify="center"
+            alignItems="center"
         >
             <Typography>Test</Typography>
             <Button 
@@ -44,24 +40,9 @@ export default function Test() {
             >
                 Index
             </Button>
-            <Button 
-                variant="contained"
-                color="primary"
-                onClick={connection}
-            >
-                Connection
-            </Button>
-            <Button 
-                variant="contained"
-                color="primary"
-                onClick={deconnection}
-            >
-                Déconnection
-            </Button>
-            <Typography>Etat : {message} </Typography>
-            <Typography>Tokken : {JWT} </Typography>
-            
-
+            <Typography>{cookies.auth!= undefined? "Cookie" : "Pas de cookie"} </Typography>
+            <Typography>Token : {token} </Typography>
+            <Typography>Refresh token : {refreshToken} </Typography>
         </Grid>
     )
 }
