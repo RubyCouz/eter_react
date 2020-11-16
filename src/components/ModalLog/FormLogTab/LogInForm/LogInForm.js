@@ -1,20 +1,28 @@
-import Grid from "@material-ui/core/Grid";
-import FormControl from "@material-ui/core/FormControl";
-import InputLabel from "@material-ui/core/InputLabel";
-import OutlinedInput from "@material-ui/core/OutlinedInput";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import AccountCircleIcon from "@material-ui/icons/AccountCircle";
-import IconButton from "@material-ui/core/IconButton";
-import Visibility from "@material-ui/icons/Visibility";
-import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import React from "react";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogActions from "@material-ui/core/DialogActions";
-import Button from "@material-ui/core/Button";
-import {makeStyles} from "@material-ui/core/styles";
-import {ModalContext} from "../../ModalContext"
+
+import { 
+    FormControl,
+    InputLabel,
+    OutlinedInput,
+    InputAdornment,
+    IconButton,
+    Grid,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    Button
+} from "@material-ui/core";
+
+import {
+    AccountCircle as AccountCircleIcon,
+    Visibility,
+    VisibilityOff
+} from "@material-ui/icons";
+
+import { makeStyles } from "@material-ui/core/styles";
+import { ModalContext } from "../../ModalContext"
 import { AccountContext } from '../../../../Context/AccountContext'
+import { useCookies } from 'react-cookie'
 
 
 export default function LogInForm() {
@@ -42,7 +50,9 @@ export default function LogInForm() {
         event.preventDefault();
     };
 
-    const {ModalAlertSetData, SetJWT} = React.useContext(AccountContext);
+    const {ModalAlertSetData} = React.useContext(AccountContext);
+
+    const [cookies, setCookie] = useCookies(['auth']);
 
     const axios = require('axios').default;
     
@@ -57,7 +67,7 @@ export default function LogInForm() {
             url: 'https://localhost:8000/api/login',
         })
         .then(function (reponse) {
-            SetJWT(reponse.data.token)
+            setCookie('auth', reponse.data);
             ModalAlertSetData({
                 data:"Token sauvegarder",
                 severity: "success"
