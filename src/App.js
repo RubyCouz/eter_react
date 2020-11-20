@@ -48,6 +48,8 @@ function App() {
 
   const classes = useStyles();
 
+  const [login, setLogin] = useState(false);
+
   //UseState pour la snackbar
   const [open, setOpen] = useState(false);
 
@@ -66,9 +68,17 @@ function App() {
       <AccountContext.Provider 
         value={{
             ModalAlertSetData: setSnackDataFunction,
+            login: login,
+            setLogin: setLogin,
           }}
       >
-        <ModalAlert snackData={snackData} open={{value : open, setValue : setOpen}}  />
+        <ModalAlert 
+          snackData={snackData}
+          open={{
+            value : open,
+            setValue : setOpen
+          }}
+        />
         <ThemeProvider theme={theme}>
           <div className={"App", classes.root}>
             <Router>
