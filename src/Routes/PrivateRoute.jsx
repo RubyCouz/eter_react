@@ -1,16 +1,21 @@
-import React from "react"
-import { Route, Redirect } from 'react-router-dom';
-import { useCookies } from 'react-cookie'
+import React from "react";
+
+import {
+  Route,
+  Redirect,
+} from 'react-router-dom';
+
+import { AccountContext } from '../Context/AccountContext';
 
 export default function PrivateRoute({ children, ...rest }) {
 
-  const [cookies, setCookie] = useCookies(['auth']);
+  const { login } = React.useContext( AccountContext );
 
   return (
     <Route
       {...rest}
       render={({ location }) =>
-        cookies.auth != undefined ? (
+        login ? (
           children
         ) : (
           <Redirect
@@ -23,4 +28,5 @@ export default function PrivateRoute({ children, ...rest }) {
       }
     />
   )
+
 }
