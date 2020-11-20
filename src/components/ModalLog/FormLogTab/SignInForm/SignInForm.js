@@ -1,35 +1,44 @@
-import Grid from "@material-ui/core/Grid";
-import FormControl from "@material-ui/core/FormControl";
-import InputLabel from "@material-ui/core/InputLabel";
-import OutlinedInput from "@material-ui/core/OutlinedInput";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import AccountCircleIcon from "@material-ui/icons/AccountCircle";
-import IconButton from "@material-ui/core/IconButton";
-import Visibility from "@material-ui/icons/Visibility";
-import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import React from "react";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogActions from "@material-ui/core/DialogActions";
-import Button from "@material-ui/core/Button";
-import {makeStyles} from "@material-ui/core/styles";
-import {ModalContext} from "../../ModalContext";
+
+import {
+    Grid,
+    FormControl,
+    InputLabel,
+    OutlinedInput,
+    InputAdornment,
+    IconButton,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    Button,
+    Typography,
+} from "@material-ui/core";
+
+import {
+    AccountCircle as AccountCircleIcon,
+    Visibility,
+    VisibilityOff,
+} from "@material-ui/icons";
+
+import { makeStyles } from "@material-ui/core/styles";
+import { ModalContext } from "../../ModalContext";
 import { AccountContext } from '../../../../Context/AccountContext'
-import { List, ListItem, ListItemText, Typography } from "@material-ui/core";
 
 export default function SignInForm() {
     const useStyles = makeStyles((theme) => ({
             inputClass: {
                 width: '100%'
             },
-        })
-    )
+    }))
+
     const classes = useStyles();
+
     const [inputValue, setInputValue] = React.useState({
         email: '',
         password: '',
         showPassword: false,
     });
+
     const handleChange = (prop) => (event) => {
         setInputValue({...inputValue, [prop]: event.target.value});
     };
@@ -42,40 +51,38 @@ export default function SignInForm() {
         event.preventDefault();
     };
 
-    const {handleClose} = React.useContext(ModalContext);
-
-
-    const {ModalAlertSetData} = React.useContext(AccountContext);
-
+    const { handleClose } = React.useContext(ModalContext);
+    const { ModalAlertSetData } = React.useContext(AccountContext);
     const axios = require('axios').default;
     
     const handleClick = () => {
         handleClose();
         axios({
             data: {
-                query: `mutation{
-                    createEterUser(
-                        input:{
-                            userLogin: "${inputValue.email}"
-                            userMail: "${inputValue.email}"
-                            userPassword: "${inputValue.password}"
-                            userDiscord: "${inputValue.email}"
+                query: `
+                    mutation{
+                        createEterUser(
+                            input:{
+                                userLogin: "${inputValue.email}"
+                                userMail: "${inputValue.email}"
+                                userPassword: "${inputValue.password}"
+                                userDiscord: "${inputValue.email}"
+                            }
+                        )
+                        {
+                            eterUser{userMail}
                         }
-                    )
-                    {
-                        eterUser{userMail}
                     }
-                }`
+                `
             },
+//            withCredentials: true,
             method: 'post',
             url: 'https://localhost:8000/api/graphql',
         })
         .then( (reponse) => {
-            console.log("blabla")
-            console.log(reponse.data)
             ModalAlertSetData({
                 severity: "success",
-                data: <Typography>Le compte ${reponse.data.data.createEterUser.eterUser.userMail} a était crée</Typography>
+                data: <Typography>Le compte { reponse.data.data.createEterUser.eterUser.userMail } a était crée</Typography>
             })
         })
         .catch( () => {
