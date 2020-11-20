@@ -20,24 +20,26 @@ import {
 } from "@material-ui/icons";
 
 import { makeStyles } from "@material-ui/core/styles";
-import { ModalContext } from "../../ModalContext"
-import { AccountContext } from '../../../../Context/AccountContext'
-import { useCookies } from 'react-cookie'
+
+import { ModalContext } from "../../ModalContext";
+import { AccountContext } from '../../../../Context/AccountContext';
 
 
 export default function LogInForm() {
     const useStyles = makeStyles((theme) => ({
-            inputClass: {
-                width: '100%'
-            },
-        })
-    )
+        inputClass: {
+            width: '100%'
+        },
+    }))
+
     const classes = useStyles();
+
     const [inputValue, setInputValue] = React.useState({
         email: '',
         password: '',
         showPassword: false,
     });
+
     const handleChange = (prop) => (event) => {
         setInputValue({...inputValue, [prop]: event.target.value});
     };
@@ -50,9 +52,7 @@ export default function LogInForm() {
         event.preventDefault();
     };
 
-    const {ModalAlertSetData} = React.useContext(AccountContext);
-
-    const [cookies, setCookie] = useCookies(['auth']);
+    const {ModalAlertSetData, setLogin} = React.useContext(AccountContext);
 
     const axios = require('axios').default;
     
@@ -64,17 +64,17 @@ export default function LogInForm() {
                 password: inputValue.password
             },
             method: 'post',
-            url: 'https://localhost:8000/api/login',
+            url: 'https://localhost:8000/api/token/login',
+            withCredentials: true,
         })
-        .then(function (reponse) {
-            setCookie('auth', reponse.data);
+        .then(function () {
+            setLogin(true)
             ModalAlertSetData({
                 data:"Token sauvegarder",
                 severity: "success"
             })
         })
-        .catch(function (error) {
-            console.log(error.reponse)
+        .catch(function () {
             ModalAlertSetData({
                 data:"Pas de token",
                 severity: "error"
