@@ -1,8 +1,7 @@
 import 
-    React,
-{
-    useState,
-    useEffect,
+    React,{
+        useState,
+        useEffect,
 } from 'react'
 
 import {
@@ -14,17 +13,9 @@ import {
     TableCell,
 } from '@material-ui/core'
 
-import {
-    useCookies,
-} from 'react-cookie'
-
 export default function BackOffice() {
 
     const [state, setState] = useState()
-    
-    const [cookies, setCookie] = useCookies(['auth']);
-//    token = cookies.auth.token
-//    refresh_token = cookies.auth.refresh_token  
 
     useEffect( () => {
         function fetchMap(result) {
@@ -59,30 +50,31 @@ export default function BackOffice() {
                     </TableRow>
                 )
             }
-            
+
             setState(data);
         }
 
-
         fetch('https://localhost:8000/api/graphql', {
-            body:JSON.stringify({query: `
-                query{
-                    eterUsers{
-                        edges{
-                            node{
-                                userLogin
-                                userRole
+            body:JSON.stringify({
+                query: `
+                    query{
+                        eterUsers(first: 100){
+                            edges{
+                                node{
+                                    userLogin
+                                    userRole
+                                }
                             }
                         }
                     }
-                }`
-                }),
-            //credentials: "include",
+                `
+            }),
+            credentials: "include", 
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
-                'Authorization': 'Bearer ' + cookies.auth.token
+                //'Authorization': 'Bearer ' + cookies.auth.token
             }
         })
         .then((response) => {
