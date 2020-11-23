@@ -1,8 +1,8 @@
 import React from "react"
 import { Typography, Button, Grid } from "@material-ui/core"
-import { useHistory, NavLink } from "react-router-dom"
-import { AccountContext } from '../../Context/AccountContext'
-import { useCookies } from 'react-cookie'
+import { useHistory} from "react-router-dom"
+import { getData } from '../../Tools/Cookie/ManagingCookie'
+import { useCookies } from 'react-cookie';
 
 export default function Test() {
     let history = useHistory();
@@ -12,17 +12,13 @@ export default function Test() {
         history.push("/")
     }
 
-    const [cookies, setCookie] = useCookies(['auth']);
+    const keyCookie = 'jwt_hp'
 
-    let token = "Aucune données"
-    let refreshToken = "Aucune données"
+    const [cookies] = useCookies([keyCookie]);
 
-    if (cookies.auth) {
-        token = cookies.auth.token ?? cookies.auth.token
+    const xsrf =  getData(cookies)['xsrf-token'] ? getData(cookies)["xsrf-token"] : "Pas de xsrf"
 
-        refreshToken = cookies.auth.refresh_token ?? cookies.auth.refresh_token
-    }
-
+    const roles = getData(cookies)["roles"] ? getData(cookies)["roles"] : "Aucun roles"
 
     return(
 
@@ -40,9 +36,9 @@ export default function Test() {
             >
                 Index
             </Button>
-            <Typography>{cookies.auth!= undefined? "Cookie" : "Pas de cookie"} </Typography>
-            <Typography>Token : {token} </Typography>
-            <Typography>Refresh token : {refreshToken} </Typography>
+            <Typography>{ xsrf }</Typography>
+            <Typography>{ roles }</Typography>
+            <Typography>{ JSON.stringify(document.cookie) }</Typography>
         </Grid>
     )
 }
