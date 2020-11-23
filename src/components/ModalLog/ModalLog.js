@@ -1,8 +1,10 @@
 import React from 'react';
-import Dialog from '@material-ui/core/Dialog';
-import Slide from '@material-ui/core/Slide';
-import FormLogTab from "./FormLogTab/FormLogTab";
+import {
+    Dialog,
+    Slide
+} from '@material-ui/core';
 import { useHistory } from "react-router-dom";
+import FormLogTab from "./FormLogTab/FormLogTab";
 import  { ModalContext } from "./ModalContext"
 // import { TransitionProps } from '@material-ui/core/transitions';
 
