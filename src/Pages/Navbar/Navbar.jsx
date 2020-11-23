@@ -108,9 +108,11 @@ export default function Navbar() {
     path = path === "/" ? "" : path
 
 
+
     const classes = useStyles();
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
+    
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -125,19 +127,23 @@ export default function Navbar() {
             <CssBaseline/>
             <AppBar
                 position="fixed"
-                className={clsx(classes.appBar, {
-                    [classes.appBarShift]: open,
-                })}
+                className={
+                    clsx(classes.appBar, {
+                        [classes.appBarShift]: open,
+                    })
+                }
             >
                 <Toolbar>
                     <IconButton
-                        color="inherit"
-                        aria-label="open drawer"
-                        onClick={handleDrawerOpen}
-                        edge="start"
-                        className={clsx(classes.menuButton, {
-                            [classes.hide]: open,
-                        })}
+                        color = "inherit"
+                        aria-label = "open drawer"
+                        onClick = {handleDrawerOpen}
+                        edge = "start"
+                        className = {
+                            clsx(classes.menuButton, {
+                                [classes.hide]: open,
+                            })
+                        }
                     >
                         <MenuIcon/>
                     </IconButton>
@@ -154,18 +160,6 @@ export default function Navbar() {
                             >
                                 EterelZ
                             </Typography>
-                        </Box>
-                        <Box>
-                            <NavLink to={"/admin"}>
-                                <Button
-                                    className={classes.button}
-                                    variant="outlined"
-                                    color="primary"
-                                    key={"BackOffice"}
-                                >
-                                    Back-office
-                                </Button>
-                            </NavLink>
                         </Box>
                         <Box>
                             <NavLink
@@ -185,10 +179,12 @@ export default function Navbar() {
             </AppBar>
             <Drawer
                 variant="permanent"
-                className={clsx(classes.drawer, {
-                    [classes.drawerOpen]: open,
-                    [classes.drawerClose]: !open,
-                })}
+                className={
+                    clsx(classes.drawer, {
+                        [classes.drawerOpen]: open,
+                        [classes.drawerClose]: !open,
+                    })
+                }
                 classes={{
                     paper: clsx({
                         [classes.drawerOpen]: open,
