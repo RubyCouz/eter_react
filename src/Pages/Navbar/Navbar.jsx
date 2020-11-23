@@ -122,6 +122,38 @@ export default function Navbar() {
         setOpen(false);
     };
 
+    //Chargement du role de l'utilisateur
+    const keyCookie = 'jwt_hp'
+    const [cookies] = useCookies([keyCookie]);
+    const userRole = getData(cookies)["roles"] ? getData(cookies)["roles"][0] : false 
+
+
+    //Chemin et text du bouton connexion
+    const connexion = 
+        userRole ? {
+            path : "/account",
+            text : "Compte",
+        } : {
+            path : (path + "/login"),
+            text : "Connexion",
+        };
+
+    //Bouton backoffice
+    const roles = userRole === "ROLE_ADMIN" ?
+        <Box>
+            <NavLink to={"/admin"}>
+                <Button
+                    className={classes.button}
+                    variant="outlined"
+                    color="primary"
+                    key={"BackOffice"}
+                >
+                    Back-office
+                </Button>
+            </NavLink>
+        </Box>:""
+
+
     return (
         <>
             <CssBaseline/>
@@ -161,16 +193,17 @@ export default function Navbar() {
                                 EterelZ
                             </Typography>
                         </Box>
+                        {roles}
                         <Box>
                             <NavLink
-                                to={path + "/login"}
+                                to = { connexion["path"] }
                             >
                                 <Button
                                     className={classes.button}
                                     variant="outlined"
                                     color="primary"
                                 >
-                                    Connexion
+                                    { connexion["text"] }
                                 </Button>
                             </NavLink>
                         </Box>
