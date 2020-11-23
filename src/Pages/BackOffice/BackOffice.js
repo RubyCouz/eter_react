@@ -13,16 +13,24 @@ import {
     TableCell,
 } from '@material-ui/core'
 
+import { useCookies } from 'react-cookie';
+import Request from '../../Tools/Request/Request'
+import { getData } from '../../Tools/Cookie/ManagingCookie'
+
 export default function BackOffice() {
 
     const [state, setState] = useState()
+
+    const keyCookie = 'jwt_hp'
+    const [cookies] = useCookies([keyCookie]);
+    const xsrf =  getData(cookies)['xsrf-token'] ? getData(cookies)["xsrf-token"] : false
 
     useEffect( () => {
         function fetchMap(result) {
             let data = [];
 
-            if (!result.errors && result.data) {
-                result.data.eterUsers.edges.map(val => {
+            if ( !result.errors && result.data ) {
+                result.data.eterUsers.edges.map(val => (
                     data.push(
                         <TableRow
                             key={val.node.userLogin}
@@ -35,7 +43,7 @@ export default function BackOffice() {
                             </TableCell>
                         </TableRow>
                     )
-                })
+                ))
             } else {
                 data.push(
                     <TableRow
@@ -54,37 +62,27 @@ export default function BackOffice() {
             setState(data);
         }
 
-        fetch('https://localhost:8000/api/graphql', {
-            body:JSON.stringify({
-                query: `
-                    query{
-                        eterUsers(first: 100){
-                            edges{
-                                node{
-                                    userLogin
-                                    userRole
-                                }
+        const query = {
+            query : `
+                query {
+                    eterUsers ( first: 100 ) {
+                        edges {
+                            node {
+                                userLogin
+                                userRole
                             }
                         }
                     }
-                `
-            }),
-            credentials: "include", 
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                //'Authorization': 'Bearer ' + cookies.auth.token
-            }
+                }
+            `
+        }
+
+        Request( query, xsrf )
+        .then(function(result) {
+            fetchMap(result);
         })
-        .then((response) => {
-            return response.json()
-        })
-        .then((result) => {
-            fetchMap(result)
-        })
-    }, [])
-    
+
+    }, [xsrf])
    
 
     return (
