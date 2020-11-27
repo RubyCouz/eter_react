@@ -1,12 +1,12 @@
 import React, { Suspense, lazy, useState } from 'react';
 import { BrowserRouter as Router } from "react-router-dom";
-import { CookiesProvider } from 'react-cookie';
 import { ThemeProvider, createMuiTheme, makeStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Routes from './Routes/Routes';
 import { AccountContext } from './Context/AccountContext';
 import ModalAlert from './components/ModalAlert/ModalAlert';
 import './App.css';
+import useCookiePlayload from "./Hook/useCookiePlayload"
 
 // import composants
 const Navbar = lazy( () => import('./Pages/Navbar/Navbar'));
@@ -48,14 +48,18 @@ function App() {
 
   const classes = useStyles();
 
-  const [login, setLogin] = useState(false);
+  //Hook pour les information du JWT
+  const [ sessionData, sessionRemove ] = useCookiePlayload('jwt_hp')
+  
 
-  //UseState pour la snackbar
+
+
+  //Hook pour la snackbar
   const [open, setOpen] = useState(false);
 
   const [snackData, setSnackData] = useState({
-      data: null,
-      severity: null
+    data: null,
+    severity: null
   })
 
   const setSnackDataFunction = (data) => {
@@ -64,36 +68,34 @@ function App() {
   };
 
   return (
-    <CookiesProvider>
-      <AccountContext.Provider 
-        value={{
-            ModalAlertSetData: setSnackDataFunction,
-            login: login,
-            setLogin: setLogin,
-          }}
-      >
-        <ModalAlert 
-          snackData={snackData}
-          open={{
-            value : open,
-            setValue : setOpen
-          }}
-        />
-        <ThemeProvider theme={theme}>
-          <div className={"App", classes.root}>
-            <Router>
-              <Suspense fallback={<CircularProgress />}>     
-                <Navbar />
-                <div className={classes.content} >
-                  <div className={classes.toolbar} />
-                  <Routes />
-                </div>
-              </Suspense>
-            </Router>
-          </div>
-        </ThemeProvider>
-      </AccountContext.Provider>
-    </CookiesProvider>
+    <AccountContext.Provider 
+      value={{
+          ModalAlertSetData: setSnackDataFunction,
+          sessionData: sessionData,
+          sessionRemove: sessionRemove,
+        }}
+    >
+      <ModalAlert 
+        snackData={snackData}
+        open={{
+          value : open,
+          setValue : setOpen
+        }}
+      />
+      <ThemeProvider theme={theme}>
+        <div className={'App', classes.root}>
+          <Router>
+            <Suspense fallback={<CircularProgress />}>     
+              <Navbar />
+              <div className={classes.content} >
+                <div className={classes.toolbar} />
+                <Routes />
+              </div>
+            </Suspense>
+          </Router>
+        </div>
+      </ThemeProvider>
+    </AccountContext.Provider>
   );
 }
 
