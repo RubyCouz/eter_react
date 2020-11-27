@@ -52,7 +52,7 @@ export default function LogInForm() {
         event.preventDefault();
     };
 
-    const {ModalAlertSetData, setLogin} = React.useContext(AccountContext);
+    const { ModalAlertSetData } = React.useContext(AccountContext);
 
     const axios = require('axios').default;
     
@@ -68,7 +68,6 @@ export default function LogInForm() {
             withCredentials: true,
         })
         .then(function () {
-            setLogin(true)
             ModalAlertSetData({
                 data:"Token sauvegarder",
                 severity: "success"
