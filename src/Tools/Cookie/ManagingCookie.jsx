@@ -1,20 +1,21 @@
     //Prend valeur d'un cookie dans avec la possiblilité de split le résultat
-    function readCookieKey( cookie ) {
-        
+    function readCookieKey( keyCookie ) {
         const splitter = "."
         let value
 
         try {
-            const key = Object.keys(cookie)[0]
-            value = cookie[key]
+            value = document.cookie
+                .split('; ')
+                .find(row => row.startsWith(keyCookie))
+                .split('=')[1];
+
+            if ( value && splitter ) {
+                value = value.split( splitter )
+            }
         } catch ( error ) {
            return false
         }
-
-        if ( value && splitter ) {
-            value = value.split( splitter )
-        }
-
+        
         return value
     }
 
@@ -30,13 +31,17 @@
         return decode
     }
 
-    export function getData( cookie) {
+    export function getData( key ) {
         //JWT Header et Playload
-        let data = readCookieKey( cookie )
+        let data = readCookieKey( key )
         //Decoder le base64 du playload
         if ( data ) {
             data = convertBase64JSON( data[ 1 ] )
         }
 
         return data ? data : false
+    }
+
+    export function deleteCookie ( key ) {
+        document.cookie = key+"=; expires=Thu, 01 Jan 1970 00:00:00 GMT"
     }
