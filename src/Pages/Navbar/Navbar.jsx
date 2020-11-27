@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useContext } from "react"
 import clsx from 'clsx';
 
 import {
@@ -34,10 +34,11 @@ import {
     ListItem,
     ListItemIcon,
     ListItemText,
+    ButtonGroup,
 } from "@material-ui/core";
 
-import { useCookies } from 'react-cookie';
-import { getData } from '../../Tools/Cookie/ManagingCookie'
+
+import { AccountContext } from '../../Context/AccountContext';
 
 const drawerWidth = 240;
 
@@ -123,36 +124,13 @@ export default function Navbar() {
     };
 
     //Chargement du role de l'utilisateur
-    const keyCookie = 'jwt_hp'
-    const [cookies] = useCookies([keyCookie]);
-    const userRole = getData(cookies)["roles"] ? getData(cookies)["roles"][0] : false 
+    const {sessionData, sessionRemove} = useContext(AccountContext);
 
+    let userRole = false
 
-    //Chemin et text du bouton connexion
-    const connexion = 
-        userRole ? {
-            path : "/account",
-            text : "Compte",
-        } : {
-            path : (path + "/login"),
-            text : "Connexion",
-        };
-
-    //Bouton backoffice
-    const roles = userRole === "ROLE_ADMIN" ?
-        <Box>
-            <NavLink to={"/admin"}>
-                <Button
-                    className={classes.button}
-                    variant="outlined"
-                    color="primary"
-                    key={"BackOffice"}
-                >
-                    Back-office
-                </Button>
-            </NavLink>
-        </Box>:""
-
+    if (sessionData["login"]) {
+        userRole = sessionData["roles"][0]
+    }
 
     return (
         <>
@@ -193,19 +171,41 @@ export default function Navbar() {
                                 EterelZ
                             </Typography>
                         </Box>
-                        {roles}
-                        <Box>
-                            <NavLink
-                                to = { connexion["path"] }
-                            >
+                        <Box
+                            visibility = { userRole === "ROLE_ADMIN" ? "visible": "hidden"}
+                        >
+                            <NavLink to={"/admin"}>
                                 <Button
                                     className={classes.button}
                                     variant="outlined"
                                     color="primary"
+                                    key={"BackOffice"}
                                 >
-                                    { connexion["text"] }
+                                    Back-office
                                 </Button>
                             </NavLink>
+                        </Box>
+                       
+                        <Box>
+                            <ButtonGroup
+                                aria-label="outlined primary button group"
+                            > 
+                                <Button
+                                    onClick = {sessionRemove}
+                                    className={classes.button}
+                                >
+                                    Déconnecter
+                                </Button>
+                                <NavLink
+                                    to = { userRole ? "/account" : path + "/login" }
+                                >
+                                    <Button
+                                        className={classes.button}
+                                    >
+                                        { userRole ? "Compte" : "Connexion" }
+                                    </Button>
+                                </NavLink>
+                            </ButtonGroup>
                         </Box>
                     </Grid>
                 </Toolbar>
