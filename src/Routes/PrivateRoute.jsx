@@ -1,20 +1,19 @@
-import React from "react";
+import React, { useContext } from 'react';
 
 import {
   Route,
   Redirect,
 } from 'react-router-dom';
 
-import { useCookies } from 'react-cookie';
-import { getData } from '../Tools/Cookie/ManagingCookie'
-
+import { AccountContext } from '../Context/AccountContext';
 
 export default function PrivateRoute({ children, ...rest }) {
 
-  const keyCookie = 'jwt_hp'
-  const [cookies] = useCookies([keyCookie]);
-  const userAdmin = getData(cookies)["roles"] ? 
-    getData(cookies)["roles"][0] === 'ROLE_ADMIN'?
+  const { sessionData } = useContext( AccountContext );
+
+
+  const userAdmin = sessionData['login'] ? 
+    sessionData['roles'][0] === 'ROLE_ADMIN'?
       true
       : false
   : false
@@ -28,7 +27,7 @@ export default function PrivateRoute({ children, ...rest }) {
         ) : (
           <Redirect
             to={{
-              pathname: "/login",
+              pathname: '/login',
               state: { from: location }
             }}
           />
