@@ -2,6 +2,8 @@ import
     React,{
         useState,
         useEffect,
+        useContext,
+        useMemo,
 } from 'react'
 
 import {
@@ -13,39 +15,106 @@ import {
     TableCell,
 } from '@material-ui/core'
 
-import { useCookies } from 'react-cookie';
 import Request from '../../Tools/Request/Request'
-import { getData } from '../../Tools/Cookie/ManagingCookie'
+
+import { AccountContext } from '../../Context/AccountContext';
 
 export default function BackOffice() {
 
-    const [state, setState] = useState()
+    const { sessionData } = useContext( AccountContext );
+    const xsrf =  sessionData['login'] ? sessionData["xsrf-token"] : false
 
-    const keyCookie = 'jwt_hp'
-    const [cookies] = useCookies([keyCookie]);
-    const xsrf =  getData(cookies)['xsrf-token'] ? getData(cookies)["xsrf-token"] : false
+    const [table, setTable] = useState()
+
+
+    // Template pour les informations
+    // 0 est prit comme key des lignes
+    const [templateData] = useState({
+        0 : {
+            nameColumn: "Utilisateur",
+            nameQuery: "userLogin",
+        },
+        1 : {
+            nameColumn: "Role",
+            nameQuery: "userRole",
+        },
+        3 : {
+            nameColumn: "Date",
+            nameQuery: "userDate",
+        },
+    })
+
+    //Création de la requête
+    const query = useMemo(
+        () => {
+            let queryColumn = "" ;
+            for ( const [ key ] of Object.entries( templateData ) ) {
+                queryColumn += " " + templateData[ key ][ "nameQuery" ]
+            }
+
+            const query = {
+                query : `
+                    query {
+                        eterUsers ( first: 100 ) {
+                            edges {
+                                node {
+                                    ${queryColumn}
+                                }
+                            }
+                        }
+                    }
+                `
+            }
+            return query
+        }
+        , [templateData]
+    );
+    
+    //Création de l'en-tête du tableau
+    const header = useMemo(
+        () => {
+            let headerData = [];
+
+            for ( const [ key ] of Object.entries( templateData ) ) {
+                headerData.push(
+                    <TableCell>
+                        { templateData[ key ][ "nameColumn" ] }
+                    </TableCell>
+                )
+            }
+            return headerData
+        }
+        , [templateData]
+    );
 
     useEffect( () => {
         function fetchMap(result) {
-            let data = [];
+            let table = [];
 
             if ( !result.errors && result.data ) {
-                result.data.eterUsers.edges.map(val => (
-                    data.push(
-                        <TableRow
-                            key={val.node.userLogin}
+               table = result.data.eterUsers.edges.map(val => {
+
+                    // création des cellules de la lignes
+                    let row = []
+                    for ( const [ key ] of Object.entries( templateData ) ) {
+                        row.push(
+                            <TableCell>
+                                { val.node[ templateData[ key ][ "nameQuery" ] ] }
+                            </TableCell>
+                        )
+                    }
+
+                    // création de la lignes du tableau
+                    
+                        return <TableRow
+                            key={ val.node[ templateData[ "0" ][ "nameQuery" ] ] }
                         >
-                            <TableCell>
-                                {val.node.userLogin}
-                            </TableCell>
-                            <TableCell>
-                                {val.node.userRole}
-                            </TableCell>
+                         { row }
                         </TableRow>
-                    )
-                ))
+                    
+                })
             } else {
-                data.push(
+                table.push(
                     <TableRow
                         key={"rien"}
                     >
@@ -59,22 +128,7 @@ export default function BackOffice() {
                 )
             }
 
-            setState(data);
-        }
-
-        const query = {
-            query : `
-                query {
-                    eterUsers ( first: 100 ) {
-                        edges {
-                            node {
-                                userLogin
-                                userRole
-                            }
-                        }
-                    }
-                }
-            `
+            setTable(table);
         }
 
         Request( query, xsrf )
@@ -82,8 +136,7 @@ export default function BackOffice() {
             fetchMap(result);
         })
 
-    }, [xsrf])
-   
+    },[])
 
     return (
         <div>
@@ -91,12 +144,11 @@ export default function BackOffice() {
                 <Table>
                     <TableHead>
                         <TableRow>
-                            <TableCell>Login</TableCell>
-                            <TableCell>Role</TableCell>
+                            { header }
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {state}
+                        { table }
                     </TableBody>
                 </Table>
             </TableContainer>
