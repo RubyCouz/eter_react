@@ -190,12 +190,18 @@ export default function Navbar() {
                             <ButtonGroup
                                 aria-label="outlined primary button group"
                             > 
-                                <Button
-                                    onClick = {sessionRemove}
-                                    className={classes.button}
+                                <Box
+                                    component = "span"    
+                                    visibility = { userRole ? "visible" : "hidden" }
                                 >
-                                    Déconnecter
-                                </Button>
+                                    <Button
+                                        onClick = { sessionRemove }
+                                        className = { classes.button }
+                                        display =  "none"
+                                    >
+                                        Déconnecter
+                                    </Button>
+                                </Box>
                                 <NavLink
                                     to = { userRole ? "/account" : path + "/login" }
                                 >
