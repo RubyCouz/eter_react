@@ -5,6 +5,7 @@ const Home  = lazy( () => import("../Pages/Home/Home"));
 const Test  = lazy( () => import("../Pages/Test/Test"));
 const BackOffice = lazy(() => import('../Pages/BackOffice/BackOffice'))
 const Error404 = lazy(() => import('../Pages/Error404/Error404'))
+const Account = lazy(() => import('../Pages/Account/Account'))
 const AlertDialogSlide  = lazy( () => import('../components/ModalLog/ModalLog'));
 
 export default () => (
@@ -34,6 +35,13 @@ export default () => (
                     <Redirect to="/error404" />
                 </Switch>
             </PrivateRoute>
+            <Route path="/account">
+                <Account />
+                <Switch>
+                    <Route path="/account" exact />
+                    <Redirect to="/error404" />
+                </Switch>
+            </Route>
             <Route path="/error404">
                 <Error404 />
                 <Switch>
