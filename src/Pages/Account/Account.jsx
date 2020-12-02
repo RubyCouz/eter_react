@@ -16,9 +16,8 @@ import Request from '../../Tools/Request/Request'
 import { AccountContext } from '../../Context/AccountContext';
 
 export default function Test() {
-  //Utilisation du tokken et utilisation
 
-
+  // Modèle des informations du compte a récupéré
   const [templateData] = useState({
       0 : {
           nameColumn: "Utilisateur",
@@ -48,6 +47,10 @@ export default function Test() {
         nameColumn: "Ville",
         nameQuery: "userCity",
       },
+      8: {
+        nameColumn: "dateInscr",
+        nameQuery: "dateInscr",
+      }
   })
 
 
@@ -60,23 +63,27 @@ export default function Test() {
   const xsrf =  sessionData['login'] ? sessionData["xsrf-token"] : false
 
 
-
+  // Création du template de défault pour account
   let defaultTemplate = {}
-
-
-
   for ( const [ key ] of Object.entries( templateData ) ) {
     defaultTemplate[ templateData[ key ][ "nameQuery" ] ] = ""
   }
 
+  // Toute les information du compte
   const [ account, setAccount ] = useState(defaultTemplate)
 
+  // Id de l'utilisateur
+  const [ idUser ] = useState("/api/eter_users/5")
+
+  // Création des columns pour la requête GET
   const queryColumn = useMemo(
     () => {
       let queryColumnTemporary = "" ;
 
       for ( const [ key ] of Object.entries( templateData ) ) {
-        queryColumnTemporary += " " + templateData[ key ][ "nameQuery" ]
+        const keyData = templateData[ key ][ "nameQuery" ]
+
+        queryColumnTemporary += ` ${ keyData }`
       }
 
       return  queryColumnTemporary
@@ -84,13 +91,14 @@ export default function Test() {
     , [templateData]
   );
 
+  // Requête pour GET les informations du compte
   useEffect( 
     () => {
       const query = {
           query : `
             query {
               eterUser(
-                id: "/api/eter_users/5"
+                id: "${ idUser }"
               ){
                 ${queryColumn}
               }
@@ -106,7 +114,7 @@ export default function Test() {
     }, []
   )
 
-
+  // Création du formulaire pour le rendu
   const form = useMemo(
     () => {
       let createForm = []
@@ -115,7 +123,6 @@ export default function Test() {
         
         const nameQuery = templateData[ key ][ "nameQuery" ]
         const nameColumn =  templateData[ key ][ "nameColumn" ]
-
         
         createForm.push(
           <Grid item>
@@ -129,32 +136,26 @@ export default function Test() {
             />
           </Grid>
         )
-        
 
       }
 
       return createForm
-      
     }
     , [account]
   );
 
-
-
+  // Création des columns pour la requête de modification
   const queryColumnMutation = useMemo(
     () => {
-      let queryColumnTemporary = "" ;
-
-
+      let queryColumnTemporary = "";
 
       for ( const [ key ] of Object.entries( templateData ) ) {
+        const keyData = templateData[ key ][ "nameQuery" ]
 
-        const value = typeof account[ templateData[ key ][ "nameQuery" ] ] === "string" ? 
-          "\"" + account[ templateData[ key ][ "nameQuery" ] ] + "\""
-        : 
-          account[ templateData[ key ][ "nameQuery" ] ]
+        let valueData = account[ keyData ]
+        valueData = typeof valueData === "string" ? `"${valueData}"` : valueData
 
-        queryColumnTemporary += " " + templateData[ key ][ "nameQuery" ] + " : " + value
+        queryColumnTemporary += ` ${ keyData } : ${ valueData }`
       }
 
       return  queryColumnTemporary
@@ -162,6 +163,7 @@ export default function Test() {
     , [account]
   );
 
+  // Envoie de la requête de modification
   const modifyData = () => {
 
     const axios = require('axios').default;
@@ -171,7 +173,7 @@ export default function Test() {
                 mutation{
                     updateEterUser(
                         input:{
-                          id: "/api/eter_users/5"
+                          id: "${ idUser }"
                           ${ queryColumnMutation }
                         }
                     )
@@ -185,7 +187,6 @@ export default function Test() {
         url: 'https://localhost:8000/api/graphql',
     })
     .then( (reponse) => {
-        console.log(reponse)
         ModalAlertSetData({
             severity: "success",
             data: <Typography>Les modification on était changer sur { reponse.data.data.updateEterUser.eterUser.userMail }</Typography>
@@ -198,6 +199,7 @@ export default function Test() {
         })
     })
   }
+
 
   return(
     <Grid
@@ -229,8 +231,6 @@ export default function Test() {
 
 
       </form>
-      <Typography>{ account ? account["userMail"] : "rien" }</Typography>
-      <Typography></Typography>
     </Grid>
   )
 }
