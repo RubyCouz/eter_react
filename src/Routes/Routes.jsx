@@ -27,7 +27,7 @@ export default () => (
                     <Redirect to="/error404" />
                 </Switch>
             </Route>
-            <PrivateRoute path="/admin">
+            <PrivateRoute path="/admin" role="ROLE_ADMIN">
                 <BackOffice />
                 <Switch>
                     <Route path="/admin" exact />
@@ -35,13 +35,13 @@ export default () => (
                     <Redirect to="/error404" />
                 </Switch>
             </PrivateRoute>
-            <Route path="/account">
+            <PrivateRoute path="/account">
                 <Account />
                 <Switch>
                     <Route path="/account" exact />
                     <Redirect to="/error404" />
                 </Switch>
-            </Route>
+            </PrivateRoute>
             <Route path="/error404">
                 <Error404 />
                 <Switch>
