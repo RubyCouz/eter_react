@@ -31,7 +31,6 @@ export default () => (
                 <BackOffice />
                 <Switch>
                     <Route path="/admin" exact />
-                    <Route path="/admin/login" exact component={AlertDialogSlide} />
                     <Redirect to="/error404" />
                 </Switch>
             </PrivateRoute>
