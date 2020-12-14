@@ -15,33 +15,24 @@ export default function PrivateRoute({ children, ...rest }) {
 
   const { sessionData } = useContext( AccountContext );
 
-  const userRole =
-    sessionData['login'] ? 
-      rest.role ?
-        sessionData['roles'][0] === rest.role
-      : 
-        true
-      ?
-        true
-      : 
-        false
-    :
-      false
 
+  let userRole = false
+  
+  if ( sessionData['login'] ) {
+    if ( rest.role ) {
+      userRole = sessionData['roles'][0] === rest.role
+    } else {
+      userRole = true
+    }
+  }
+
+  // Crée la route ou redirige vers le home  
   return (
     <Route
       {...rest}
-      render={({ location }) =>
-        userRole ? (
-          children
-        ) : (
-          <Redirect
-            to={{
-              pathname: '/home',
-              state: { from: location }
-            }}
-          />
-        )
+      render = {
+        ( { location } ) => 
+          userRole ? ( children ) : ( <Redirect to = { { pathname: '/home', state: { from: location } } } /> )
       }
     />
   )
