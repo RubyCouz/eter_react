@@ -1,97 +1,168 @@
 import React, {
-  useContext,
-  useEffect,
   useState,
+  lazy,
   useMemo,
+  useEffect,
+  useContext,
 } from "react"
 
 import {
-  Typography,
+  Tabs,
+  Tab,
   Grid,
-  TextField,
-  Button,
 } from "@material-ui/core"
 
+import { makeStyles } from '@material-ui/core/styles';  
+
+import TabPanel from './AccountDetail';
 import Request from '../../Tools/Request/Request'
+
 import { AccountContext } from '../../Context/AccountContext';
+import { PageAccountContext } from '../../Context/PageAccountContext';
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    flexGrow: 1,
+    backgroundColor: theme.palette.background.paper,
+    display: 'flex',
+  },
+  tabs: {
+    borderRight: `1px solid ${theme.palette.divider}`,
+  },
+}));
 
 export default function Test() {
 
-  // Modèle des informations du compte a récupéré
-  const [templateData] = useState({
-      0 : {
-          nameColumn: "Utilisateur",
-          nameQuery: "userLogin",
-      },
-      1 : {
-          nameColumn: "Role",
-          nameQuery: "userRole",
-      },
-      3 : {
-          nameColumn: "Date",
-          nameQuery: "userDate",
-      },
-      4 : {
-          nameColumn: "Discord",
-          nameQuery: "userDiscord",
-      },
-      5 : {
-        nameColumn: "Adresse",
-        nameQuery: "userAddress",
-      },
-      6 : {
-        nameColumn: "Code Postale",
-        nameQuery: "userZip",
-      },
-      7 : {
-        nameColumn: "Ville",
-        nameQuery: "userCity",
-      },
-      8: {
-        nameColumn: "dateInscr",
-        nameQuery: "dateInscr",
+  // Fonction pour calculer le temps entre deux date utiliser dans le template
+  const time = (date) => {
+    const nowTime = new Date()
+    const inscDate = new Date(date)
+
+    let difference = nowTime - inscDate
+
+
+    let resultat
+    
+    if ( difference ) {
+      if ( difference / ( 1000 * 3600 * 730 * 365 ) >= 1 ) {
+        resultat = `${ Math.trunc( difference / ( 1000 * 3600 * 730 * 365 ) ) } ans`
+      } else if ( difference / ( 1000 * 3600 * 730 ) >= 1 ) {
+        resultat = `${ Math.trunc( difference / ( 1000 * 3600 * 730 ) ) } mois`
+      } else {
+        resultat = `${ Math.trunc( difference / ( 1000 * 3600 * 24 ) ) } jours`
       }
+    }
+
+    return difference ? resultat : date
+  }
+
+  // Modèle des informations du compte a récupéré
+  const [ templateData ] = useState({
+    index : {
+        0 : {
+            name : "Résumé du compte",
+            content : {
+              userLogin : {
+                nameColumn : "Utilisateur",
+                modifiedValue : false,
+              },
+              userDescription : {
+                nameColumn : "Description",
+              },
+              userDate : {
+                nameColumn : "Date de mise a jour du compte",
+                modifiedValue : false,
+                process: time,
+              },
+              dateInscr : {
+                nameColumn : "Date inscription",
+                modifiedValue : false,
+              },
+            }
+        },
+        1 : {
+            name : "Données personnels",
+            content : {   
+              userMail : {
+                nameColumn : "Adresse email",
+              },
+              userSex : {
+                nameColumn : "Sex",
+              },
+              userAddress : {
+                nameColumn : "Adresse",
+              },
+              userZip : {
+                nameColumn : "Code postale",
+              },
+              userCity : {
+                nameColumn: "Ville",
+              },
+            }
+        },
+        2 : {
+            name : "Réseaux social",
+            content : {
+              userDiscord : {
+                nameColumn : "Discord",
+              },
+            }
+        },
+        3 : {
+          name : "Confidentialité",
+          content : {
+            userPassword : {
+              nameColumn : "Mot de passe",
+            },
+          }
+      },
+    },
   })
 
+  const classes = useStyles();
 
-  const handleChange = (prop) => (event) => {
-    setAccount({...account, [prop]: event.target.value});
-  };
+  const [ value, setValue]  = useState(0);
+
+  const handleChange = (event, newValue) => { 
+    setValue(newValue);
+  }
 
 
-  const { sessionData, ModalAlertSetData } = useContext( AccountContext );
+  const { sessionData } = useContext( AccountContext );
   const xsrf =  sessionData['login'] ? sessionData["xsrf-token"] : false
+  const [ idUser ] = useState("/api/eter_users/4")
 
 
-  // Création du template de défault pour account
-  let defaultTemplate = {}
-  for ( const [ key ] of Object.entries( templateData ) ) {
-    defaultTemplate[ templateData[ key ][ "nameQuery" ] ] = ""
+  // Création d'une modèle pour les données
+
+  let defaultTemplateData = {}
+  for ( const [ index , value ] of Object.entries( templateData[ "index" ] ) ) {
+    for ( const [ nameQuery ] of Object.entries( value["content"] ) ) {
+      defaultTemplateData[nameQuery] = ""
+    }
   }
 
   // Toute les information du compte
-  const [ account, setAccount ] = useState(defaultTemplate)
+  const [ data, setData ] = useState({})
 
-  // Id de l'utilisateur
-  const [ idUser ] = useState("/api/eter_users/5")
+
+
 
   // Création des columns pour la requête GET
   const queryColumn = useMemo(
     () => {
       let queryColumnTemporary = "" ;
-
-      for ( const [ key ] of Object.entries( templateData ) ) {
-        const keyData = templateData[ key ][ "nameQuery" ]
-
-        queryColumnTemporary += ` ${ keyData }`
+      for ( const [ key , value ] of Object.entries( templateData[ "index" ] ) ) {
+        for ( const [ key ] of Object.entries( value["content"] ) ) {
+          queryColumnTemporary += ` ${ key }`
+        }
       }
-
       return  queryColumnTemporary
     }
-    , [templateData]
+    , []
   );
-
-  // Requête pour GET les informations du compte
+  
+  // Requête GET pour les informations du compte
   useEffect( 
     () => {
       const query = {
@@ -100,7 +171,7 @@ export default function Test() {
               eterUser(
                 id: "${ idUser }"
               ){
-                ${queryColumn}
+                ${ queryColumn }
               }
             }
           `
@@ -108,129 +179,100 @@ export default function Test() {
 
       Request( query, xsrf )
       .then(function(result) {
-        console.log(result)
-        setAccount(result["data"]["eterUser"]);
+
+        let tableResult = {}
+        for ( const [ index , value ] of Object.entries( templateData[ "index" ] ) ) {
+          for ( const [ queryName ] of Object.entries( value["content"] ) ) {
+            const valueQuery =  result["data"]["eterUser"][queryName]
+            tableResult[queryName] = valueQuery
+          }
+        }
+
+        setData( {...data, ...tableResult } )
+
       })
     }, []
   )
 
-  // Création du formulaire pour le rendu
-  const form = useMemo(
-    () => {
-      let createForm = []
 
-      for ( const [ key ] of Object.entries( templateData ) ) {
-        
-        const nameQuery = templateData[ key ][ "nameQuery" ]
-        const nameColumn =  templateData[ key ][ "nameColumn" ]
-        
-        createForm.push(
-          <Grid item>
-            <TextField
-              fullWidth 
-              id = "outlined-basic"
-              label = { nameColumn }
-              variant = "outlined"
-              value = { account[ nameQuery ] }
-              onChange = { handleChange( nameQuery ) }
+  // Création des onglets 
+  const tabs = useMemo(
+    () => {
+
+      function a11yProps(index) {
+        return {
+          id: `vertical-tab-${index}`,
+          'aria-controls': `vertical-tabpanel-${index}`,
+        }
+      }
+
+      let tabs = []
+
+      Object.entries( templateData[ "index" ] ).forEach(
+        ([keyObject, valueObject]) => {
+          tabs.push(
+            <Tab
+              label = { valueObject[ "name" ] }
+              key = { keyObject }
+              { ...a11yProps( parseInt( keyObject ) ) } 
             />
-          </Grid>
-        )
+          )
+        }
+      )
 
-      }
+      return tabs
 
-      return createForm
     }
-    , [account]
-  );
+    , []
+  )
 
-  // Création des columns pour la requête de modification
-  const queryColumnMutation = useMemo(
+  //Création des panneaux d'onglets
+  const tabsPanels = useMemo(
     () => {
-      let queryColumnTemporary = "";
+      let tabsPanels = []
 
-      for ( const [ key ] of Object.entries( templateData ) ) {
-        const keyData = templateData[ key ][ "nameQuery" ]
+      Object.entries( templateData[ "index" ] ).forEach(
+        ( [ keyObject, valueObject ] ) => {
+          tabsPanels.push(
+            <TabPanel
+              key = { keyObject }
+              value = { value }
+              index = { parseInt( keyObject ) }
+              data = { valueObject[ "content" ] }
+            />
+          )
+        } 
+      )
 
-        let valueData = account[ keyData ]
-        valueData = typeof valueData === "string" ? `"${valueData}"` : valueData
+      return tabsPanels
 
-        queryColumnTemporary += ` ${ keyData } : ${ valueData }`
-      }
-
-      return  queryColumnTemporary
     }
-    , [account]
-  );
-
-  // Envoie de la requête de modification
-  const modifyData = () => {
-
-    const axios = require('axios').default;
-    axios({
-        data: {
-            query: `
-                mutation{
-                    updateEterUser(
-                        input:{
-                          id: "${ idUser }"
-                          ${ queryColumnMutation }
-                        }
-                    )
-                    {
-                        eterUser{userMail}
-                    }
-                }
-            `
-        },
-        method: 'post',
-        url: 'https://localhost:8000/api/graphql',
-    })
-    .then( (reponse) => {
-        ModalAlertSetData({
-            severity: "success",
-            data: <Typography>Les modification on était changer sur { reponse.data.data.updateEterUser.eterUser.userMail }</Typography>
-        })
-    })
-    .catch( () => {
-        ModalAlertSetData({
-            severity: "error",
-            data: <Typography>Les modification n'ont pas pu êtres valider</Typography>
-        })
-    })
-  }
-
+    , [ value ]
+  )
 
   return(
-    <Grid
-        container
-        direction ="column"
-        justify ="center"
-        alignItems ="center"
-    >
-      <form
-        noValidate
-        autoComplete = "off"
-      >
-        <Grid
-          container
-          direction = "column"
-          justify = "center"
-          alignItems = "center"
-          spacing = {5}
-        >
-          { form }
-          <Button
-            variant = "contained"
-            color = "primary"
-            onClick = { modifyData }
+      <div >
+      <Grid className={classes.root} direction="row">
+        <Grid item>
+          <Tabs
+            orientation = "vertical"
+            variant = "scrollable"
+            value = { value }
+            onChange = { handleChange }
+            aria-label = "Vertical tabs"
+            className = { classes.tabs }
           >
-            Modifier
-          </Button>
+            { tabs }
+          </Tabs>
         </Grid>
-
-
-      </form>
-    </Grid>
+        <Grid item xs>
+          <PageAccountContext.Provider 
+            value = { {defaultValue : data, setDefaultValue: setData} }
+          >
+            { tabsPanels }
+          </PageAccountContext.Provider>
+        </Grid>
+      </Grid>
+      </div>
   )
 }
