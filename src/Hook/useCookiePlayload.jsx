@@ -17,7 +17,6 @@ export default function useCookiePlayload( paramCookiesKey ) {
 
     useEffect(
         () => {
-            console.log("test")
             const cookieData = getData( dataHook.cookieKey )
             let playload = cookieData ? { ...cookieData, ...{ login: true } } : dataHook.defaultValue
             
