@@ -85,12 +85,16 @@ export default function AccountRow(props) {
         method: 'post',
         url: 'https://localhost:8000/api/graphql',
     })
-    .then( () => {
-        ModalAlertSetData({
+    .then( ( data ) => {
+        if(data.data.errors){
+          throw ""
+        } else {
+          ModalAlertSetData({
             severity: "success",
             data: <Typography>Modification effectuée</Typography>
-        })
-        setDefaultValue( { ...defaultValue, [nameQuery]:entryValue} )
+          })
+          setDefaultValue( { ...defaultValue, [nameQuery]:entryValue} )
+        }
     })
     .catch( () => {
         ModalAlertSetData({

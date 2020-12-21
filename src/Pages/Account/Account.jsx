@@ -1,6 +1,5 @@
 import React, {
   useState,
-  lazy,
   useMemo,
   useEffect,
   useContext,
@@ -136,7 +135,7 @@ export default function Test() {
   // Création d'une modèle pour les données
 
   let defaultTemplateData = {}
-  for ( const [ index , value ] of Object.entries( templateData[ "index" ] ) ) {
+  for ( const value of Object.values( templateData[ "index" ] ) ) {
     for ( const [ nameQuery ] of Object.entries( value["content"] ) ) {
       defaultTemplateData[nameQuery] = ""
     }
@@ -152,7 +151,7 @@ export default function Test() {
   const queryColumn = useMemo(
     () => {
       let queryColumnTemporary = "" ;
-      for ( const [ key , value ] of Object.entries( templateData[ "index" ] ) ) {
+      for ( const value of Object.values( templateData[ "index" ] ) ) {
         for ( const [ key ] of Object.entries( value["content"] ) ) {
           queryColumnTemporary += ` ${ key }`
         }
@@ -181,7 +180,7 @@ export default function Test() {
       .then(function(result) {
 
         let tableResult = {}
-        for ( const [ index , value ] of Object.entries( templateData[ "index" ] ) ) {
+        for ( const value of Object.values( templateData[ "index" ] ) ) {
           for ( const [ queryName ] of Object.entries( value["content"] ) ) {
             const valueQuery =  result["data"]["eterUser"][queryName]
             tableResult[queryName] = valueQuery
