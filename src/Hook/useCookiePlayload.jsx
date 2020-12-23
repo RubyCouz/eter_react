@@ -20,6 +20,7 @@ export default function useCookiePlayload( paramCookiesKey ) {
             const cookieData = getData( dataHook.cookieKey )
             let playload = cookieData ? { ...cookieData, ...{ login: true } } : dataHook.defaultValue
             
+            playload = { ...playload, ...{ id : `/api/eter_users/${playload["id"]}` } }
             setValue( playload )
         },
         [ document.cookie, dataHook ]
