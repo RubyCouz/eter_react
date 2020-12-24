@@ -50,9 +50,6 @@ function App() {
 
   //Hook pour les information du JWT
   const [ sessionData, sessionRemove ] = useCookiePlayload('jwt_hp')
-  
-
-
 
   //Hook pour la snackbar
   const [open, setOpen] = useState(false);
@@ -83,12 +80,12 @@ function App() {
         }}
       />
       <ThemeProvider theme={theme}>
-        <div className={'App', classes.root}>
+        <div className = { `App ${classes.root}` } >
           <Router>
-            <Suspense fallback={<CircularProgress />}>     
+            <Suspense fallback = { <CircularProgress /> } >     
               <Navbar />
-              <div className={classes.content} >
-                <div className={classes.toolbar} />
+              <div className = { classes.content } >
+                <div className = { classes.toolbar } />
                 <Routes />
               </div>
             </Suspense>
