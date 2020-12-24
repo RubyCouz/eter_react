@@ -10,10 +10,10 @@ import {
     Paper,
 } from "@material-ui/core"
 
-import AccountRow from './AccountRow';
+import TableRowEdit from '../../components/TableRowEdit/TableRowEdit';
   
 export default function TabPanel(props) {
-  const { value, index, data, ...other } = props;
+  const { currentIndex, index, data, idUser, defaultValue, setDefaultValue, ...other } = props;
 
 
   // Création du formulaire pour le rendu
@@ -23,30 +23,31 @@ export default function TabPanel(props) {
 
       for ( const [ nameQuery, column ] of Object.entries( data ) ) {
         createForm.push(
-          <AccountRow
+          <TableRowEdit
             key = { nameQuery }
             nameQuery = { nameQuery }
-            nameColumn = { column[ "nameColumn" ] }
-            process = { column[ "process" ] || false }
-            modified = { !( column[ "modifiedValue" ] === false ) }
+            tableRowOption = { column } // edit, modifiedValue, process,
+            idUser = { idUser }
+            defaultValue = { defaultValue }
+            setDefaultValue = { setDefaultValue }
           />
         )
       }
 
       return createForm
     }
-    , []
+    , [ defaultValue, setDefaultValue, data, idUser ]
   );
   
   return (
     <div
       role = "tabpanel"
-      hidden = { value !== index }
+      hidden = { currentIndex !== index }
       id = { `vertical-tabpanel-${index}` }
       aria-labelledby = { `vertical-tab-${index}` }
       { ...other }
     >
-      {value === index && (
+      {currentIndex === index && (
         <Box
           p = { 3 }
         >
@@ -55,6 +56,7 @@ export default function TabPanel(props) {
           >
             <Table
               aria-label = "custom pagination table"
+              size = 'medium'
             >
               <TableBody>
                 { form }
