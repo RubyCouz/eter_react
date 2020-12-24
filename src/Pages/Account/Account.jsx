@@ -9,6 +9,7 @@ import {
   Tabs,
   Tab,
   Grid,
+  Box,
 } from "@material-ui/core"
 
 import { makeStyles } from '@material-ui/core/styles';  
@@ -17,17 +18,13 @@ import TabPanel from './AccountDetail';
 import Request from '../../Tools/Request/Request'
 
 import { AccountContext } from '../../Context/AccountContext';
-import { PageAccountContext } from '../../Context/PageAccountContext';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.paper,
     display: 'flex',
-  },
-  tabs: {
-    borderRight: `1px solid ${theme.palette.divider}`,
-  },
+  }
 }));
 
 export default function Test() {
@@ -120,16 +117,16 @@ export default function Test() {
 
   const classes = useStyles();
 
-  const [ value, setValue]  = useState(0);
+  const [ currentIndex, setCurrentIndex]  = useState(0);
 
   const handleChange = (event, newValue) => { 
-    setValue(newValue);
+    setCurrentIndex(newValue);
   }
 
 
   const { sessionData } = useContext( AccountContext );
   const xsrf =  sessionData['login'] ? sessionData["xsrf-token"] : false
-  const [ idUser ] = useState("/api/eter_users/4")
+  const [ idUser ] = useState(sessionData["id"])
 
 
   // Création d'une modèle pour les données
@@ -158,7 +155,7 @@ export default function Test() {
       }
       return  queryColumnTemporary
     }
-    , []
+    , [templateData]
   );
   
   // Requête GET pour les informations du compte
@@ -187,7 +184,7 @@ export default function Test() {
           }
         }
 
-        setData( {...data, ...tableResult } )
+        setData( oldData =>( {...oldData, ...tableResult } ) )
 
       })
     }, []
@@ -235,9 +232,12 @@ export default function Test() {
           tabsPanels.push(
             <TabPanel
               key = { keyObject }
-              value = { value }
+              currentIndex = { currentIndex }
               index = { parseInt( keyObject ) }
               data = { valueObject[ "content" ] }
+              idUser = { idUser }
+              defaultValue = { data }
+              setDefaultValue = { setData }
             />
           )
         } 
@@ -246,32 +246,29 @@ export default function Test() {
       return tabsPanels
 
     }
-    , [ value ]
+    , [ currentIndex, setData, data ]
   )
 
   return(
-      <div >
-      <Grid className={classes.root} direction="row">
-        <Grid item>
-          <Tabs
-            orientation = "vertical"
-            variant = "scrollable"
-            value = { value }
-            onChange = { handleChange }
-            aria-label = "Vertical tabs"
-            className = { classes.tabs }
-          >
-            { tabs }
-          </Tabs>
-        </Grid>
-        <Grid item xs>
-          <PageAccountContext.Provider 
-            value = { {defaultValue : data, setDefaultValue: setData} }
-          >
+      <Box>
+        <Grid
+            container
+            direction="column"
+            justify="center"
+            alignItems="center"
+        >
+            <Tabs
+              currentIndex = { currentIndex }
+              onChange = { handleChange }
+              aria-label = "Vertical tabs"
+              className = { classes.tabs }
+              variant="scrollable"
+              scrollButtons="auto"
+            >
+              { tabs }
+            </Tabs>
             { tabsPanels }
-          </PageAccountContext.Provider>
         </Grid>
-      </Grid>
-      </div>
+      </Box>
   )
 }
