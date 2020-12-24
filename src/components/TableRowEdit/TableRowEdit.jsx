@@ -5,35 +5,26 @@ import React, {
 } from "react"
 
 import {
-    TextField,
-    Typography,
-    TableRow,
-    TableCell,
-    IconButton,
+  TextField,
+  Typography,
+  TableRow,
+  TableCell,
 } from "@material-ui/core"
 
-import EditAttributesOutlinedIcon from '@material-ui/icons/EditAttributesOutlined';
+import CreateIcon from '@material-ui/icons/Create';
 
 import { AccountContext } from '../../Context/AccountContext';
-import { PageAccountContext } from '../../Context/PageAccountContext';
 
-export default function AccountRow(props) {
+export default function TableRowEdit(props) {
 
-  const { nameQuery, nameColumn, process, modified } = props
-
+  const { nameQuery, tableRowOption , idUser, defaultValue, setDefaultValue } = props
 
   const { ModalAlertSetData } = useContext( AccountContext );
-  
-  const [ idUser ] = useState("/api/eter_users/4")
-
-
-
   const [ showField, setShowField ] = useState(false)
   const ShowField = () => {
     setShowField( !showField )
   }
 
-  const { defaultValue, setDefaultValue } = useContext( PageAccountContext );
   const [ entryValue, setEntryValue ] = useState()
 
   // Actualise la value entrée grâce au context value
@@ -41,14 +32,14 @@ export default function AccountRow(props) {
     () => {
 
       let value = defaultValue[nameQuery]
+      const process = tableRowOption[ "process" ] || false
 
       if ( process ) {
-        const aFunction = process
-        value = aFunction(value)
+        value = process(value)
       }
       setEntryValue(value)
     }, 
-    [defaultValue]
+    [defaultValue, nameQuery, tableRowOption]
   )
 
   // Modifie le champs
@@ -61,6 +52,20 @@ export default function AccountRow(props) {
 
     setShowField( !showField )
 
+    if ( entryValue === defaultValue[nameQuery] ) {
+      ModalAlertSetData({
+        severity: "error",
+        data: <Typography>Même valeur, aucune modification a était effectuée</Typography>
+      })
+      return
+    } else if ( !entryValue ) {
+      ModalAlertSetData({
+        severity: "error",
+        data: <Typography>Aucune donnée impossible, modification refusé</Typography>
+      })
+      setEntryValue(defaultValue[nameQuery])
+      return
+    }
     const valueData = typeof entryValue === "string" ? `"${entryValue}"` : entryValue
     const queryColumnMutation = `${ nameQuery } : ${ valueData }`
 
@@ -87,7 +92,7 @@ export default function AccountRow(props) {
     })
     .then( ( data ) => {
         if(data.data.errors){
-          throw ""
+          throw new Error();
         } else {
           ModalAlertSetData({
             severity: "success",
@@ -103,6 +108,7 @@ export default function AccountRow(props) {
         })
         setEntryValue(defaultValue[nameQuery])
     })
+
     
   }
   
@@ -115,31 +121,44 @@ export default function AccountRow(props) {
 
   return (
     <TableRow
-      key = { nameColumn }
+      hover
+      key = { tableRowOption[ "nameColumn" ] }
+      onClick = { !( tableRowOption[ "modifiedValue" ] === false) ? ShowField : undefined }
     >
       <TableCell
         component = "th"
         scope = "row"
       >
-        { nameColumn }
+        { tableRowOption[ "nameColumn" ] }
       </TableCell>
       <TableCell
         align = "right"
       >
-        { showField ? <TextField value = { entryValue }  onChange = { changeField } autoFocus  onBlur = { sendData } onKeyDown={ handleKeyPress } /> : entryValue }
+        { 
+          showField ?
+            <TextField
+              fullWidth = { true }
+              value = { entryValue }
+              onChange = { changeField }
+              autoFocus
+              onBlur = { sendData }
+              onKeyDown={ handleKeyPress }
+              size = "small"
+            />
+          : 
+            entryValue
+        }
       </TableCell>
       <TableCell
-        style = {{ width: 48 }}
+        style = {{ width: 20 }}
+        size = "small"
+        padding= "default"
       >
         {
-          modified ? 
-            <IconButton
-              onClick = { ShowField }
-            >
-              <EditAttributesOutlinedIcon/> 
-            </IconButton>
+          !( tableRowOption[ "modifiedValue" ] === false) ? 
+            <CreateIcon fontSize="small" /> 
           : 
-            ""
+            undefined
         }
       </TableCell>
     </TableRow>
