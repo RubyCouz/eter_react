@@ -5,8 +5,6 @@ import {
   TableRow,
   Checkbox,
   IconButton,
-  Typography,
-  Box,
   Collapse,
 } from '@material-ui/core';
 
@@ -15,15 +13,15 @@ import {
   KeyboardArrowUp as KeyboardArrowUpIcon,
 } from '@material-ui/icons';
 
+
+const BackOfficeTableRowDetail = React.lazy(() => import('./BackofficeTableRowDetail'));
+
 export default function BackOfficeTableRow( props ) {
-  const { row, index, setSelected, selected } = props
+  const { row, setRows, index, setSelected, selected } = props
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
-  const isItemSelected = isSelected(row.userLogin);
+  const isItemSelected = isSelected(row.id);
   const labelId = `enhanced-table-checkbox-${index}`;
-
-
-  
 
   const handleClick = (event, name) => {
     const selectedIndex = selected.indexOf(name);
@@ -53,7 +51,7 @@ export default function BackOfficeTableRow( props ) {
         role="checkbox"
         aria-checked={isItemSelected}
         tabIndex={-1}
-        key={row.userLogin}
+        key={row.id}
         
         selected={isItemSelected}
       >
@@ -61,7 +59,7 @@ export default function BackOfficeTableRow( props ) {
           <Checkbox
             checked={isItemSelected}
             inputProps={{ 'aria-labelledby': labelId }}
-            onClick={(event) => handleClick(event, row.userLogin)}
+            onClick={(event) => handleClick(event, row.id)}
           />
         </TableCell>
         <TableCell>
@@ -78,15 +76,18 @@ export default function BackOfficeTableRow( props ) {
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box margin={1}>
-              <Typography variant="h6" gutterBottom component="div">
-                History
-              </Typography>
-            </Box>
+            <React.Suspense
+              fallback = { <div>Chargement...</div> }
+            >
+              <BackOfficeTableRowDetail
+                row = { row }
+                setRows = { setRows }
+                index = { index }
+              />
+            </React.Suspense>
           </Collapse>
         </TableCell>
       </TableRow>
-    
     </>
   );
  }
