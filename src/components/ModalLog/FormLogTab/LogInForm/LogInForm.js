@@ -47,11 +47,11 @@ export default function LogInForm() {
     const handleClickShowPassword = () => {
         setInputValue({...inputValue, showPassword: !inputValue.showPassword});
     };
-
+/*
     const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
     };
-
+*/
     const { ModalAlertSetData } = React.useContext(AccountContext);
 
     const axios = require('axios').default;
@@ -85,47 +85,52 @@ export default function LogInForm() {
     const {handleClose} = React.useContext(ModalContext);
 
     return (
-        <div>
-            <DialogTitle id="alert-dialog-slide-title">{"Connexion"}</DialogTitle>
+        <>
+            <DialogTitle id = "alert-dialog-slide-title">{"Connexion"}</DialogTitle>
             {/*<form noValidate autoComplete="off">*/}
             <DialogContent>
-                <Grid container spacing={2}>
-                    <Grid item sm={12}>
-                        <FormControl variant="outlined" className={classes.inputClass}>
-                            <InputLabel htmlFor="email">Email</InputLabel>
+                <Grid container spacing = { 2 }>
+                    <Grid item sm = { 12 }>
+                        <FormControl variant = "outlined" className = { classes.inputClass }>
+                            <InputLabel htmlFor = "email">Email</InputLabel>
                             <OutlinedInput
-                                label="Email"
-                                id="email"
-                                value={inputValue.email}
-                                onChange={handleChange('email')}
-                                endAdornment={<InputAdornment position="end">
-                                    <AccountCircleIcon/>
-                                </InputAdornment>}
-                                aria-describedby="outlined-weight-helper-text"
-                                inputProps={{
+                                label = "Email"
+                                id = "email"
+                                value = { inputValue.email }
+                                onChange = { handleChange('email') }
+                                endAdornment = {
+                                    <InputAdornment position = "end">
+                                        <AccountCircleIcon/>
+                                    </InputAdornment>
+                                }
+                                aria-describedby = "outlined-weight-helper-text"
+                                inputProps = {{
                                     'aria-label': 'weight',
                                 }}
-                               labelWidth={70}
+                               labelWidth = { 70 }
                             />
                         </FormControl>
                     </Grid>
                     <Grid item sm={12}>
-                        <FormControl variant="outlined" className={classes.inputClass}>
-                            <InputLabel htmlFor="password">Password</InputLabel>
+                        <FormControl
+                            variant = "outlined"
+                            className = { classes.inputClass }
+                        >
+                            <InputLabel htmlFor = "password">Password</InputLabel>
                             <OutlinedInput
-                                id="outlined-adornment-password"
-                                type={inputValue.showPassword ? 'text' : 'password'}
-                                value={inputValue.password}
-                                onChange={handleChange('password')}
-                                endAdornment={
+                                id = "outlined-adornment-password"
+                                type = { inputValue.showPassword ? 'text' : 'password' }
+                                value = { inputValue.password }
+                                onChange = { handleChange('password') }
+                                endAdornment = {
                                     <InputAdornment position="end">
                                         <IconButton
                                             aria-label="toggle password visibility"
                                             onClick={handleClickShowPassword}
-                                            onMouseDown={handleMouseDownPassword}
+                                            //onMouseDown={handleMouseDownPassword}
                                             edge="end"
                                         >
-                                            {inputValue.showPassword ? <Visibility/> : <VisibilityOff/>}
+                                            { inputValue.showPassword ? <Visibility/> : <VisibilityOff/> }
                                         </IconButton>
                                     </InputAdornment>
                                 }
@@ -136,13 +141,19 @@ export default function LogInForm() {
                 </Grid>
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleClose} color="primary">
+                <Button
+                    onClick = { handleClose }
+                    color = "primary"
+                >
                     Annuler
                 </Button>
-                <Button onClick={handleClick} color="primary">
+                <Button
+                    onClick = { handleClick }
+                    color = "primary"
+                >
                     Se connecter
                 </Button>
             </DialogActions>
-        </div>
+        </>
     )
 }

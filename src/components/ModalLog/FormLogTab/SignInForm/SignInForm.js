@@ -1,4 +1,7 @@
-import React from "react";
+import 
+    React, {
+    useContext
+} from "react";
 
 import {
     Grid,
@@ -51,8 +54,8 @@ export default function SignInForm() {
         event.preventDefault();
     };
 
-    const { handleClose } = React.useContext(ModalContext);
-    const { ModalAlertSetData } = React.useContext(AccountContext);
+    const { handleClose } = useContext(ModalContext);
+    const { ModalAlertSetData } = useContext(AccountContext);
     const axios = require('axios').default;
     
     const handleClick = () => {
@@ -95,76 +98,88 @@ export default function SignInForm() {
 
 
     return (
-        <div>
+        <>
             <DialogTitle id="alert-dialog-slide-title">{"Inscription"}</DialogTitle>
             {/*<form noValidate autoComplete="off">*/}
             <DialogContent>
-                <Grid container spacing={2}>
-                    <Grid item sm={12}>
+                <Grid 
+                    container
+                    spacing = { 2 }
+                >
+                    <Grid
+                        item
+                        sm = { 12 }
+                    >
                         <FormControl 
-                            variant="outlined"
-                            className={classes.inputClass}
+                            variant = "outlined"
+                            className = { classes.inputClass }
                         >
-                            <InputLabel htmlFor="email">Email</InputLabel>
+                            <InputLabel htmlFor = "email">Email</InputLabel>
                             <OutlinedInput
-                                label="Email"
-                                id="email"
-                                value={inputValue.email}
-                                onChange={handleChange('email')}
-                                endAdornment={
+                                label = "Email"
+                                id = "email"
+                                value = { inputValue.email }
+                                onChange = { handleChange('email') }
+                                endAdornment = {
                                     <InputAdornment position="end">
                                         <AccountCircleIcon/>
                                     </InputAdornment>
                                 }
-                                aria-describedby="outlined-weight-helper-text"
-                                inputProps={{
+                                aria-describedby = "outlined-weight-helper-text"
+                                inputProps = {{
                                     'aria-label': 'weight',
                                 }}
-                                labelWidth={70}
+                                labelWidth = { 70 }
                             />
                         </FormControl>
                     </Grid>
-                    <Grid item sm={12}>
+                    <Grid item sm = { 12 }>
                         <FormControl
-                            variant="outlined"
-                            className={classes.inputClass}
+                            variant = "outlined"
+                            className = { classes.inputClass }
                         >
                             <InputLabel
-                                htmlFor="password"
+                                htmlFor = "password"
                             >
                                 Password
                             </InputLabel>
                             <OutlinedInput
-                                id="outlined-adornment-password"
-                                type={inputValue.showPassword ? 'text' : 'password'}
-                                value={inputValue.password}
-                                onChange={handleChange('password')}
+                                id = "outlined-adornment-password"
+                                type = { inputValue.showPassword ? 'text' : 'password' }
+                                value = { inputValue.password }
+                                onChange = { handleChange('password') }
                                 endAdornment={
                                     <InputAdornment position="end">
                                         <IconButton
-                                            aria-label="toggle password visibility"
-                                            onClick={handleClickShowPassword}
-                                            onMouseDown={handleMouseDownPassword}
-                                            edge="end"
+                                            aria-label = "toggle password visibility"
+                                            onClick = { handleClickShowPassword }
+                                            onMouseDown = { handleMouseDownPassword }
+                                            edge = "end"
                                         >
-                                            {inputValue.showPassword ? <Visibility/> : <VisibilityOff/>}
+                                            { inputValue.showPassword ? <Visibility/> : <VisibilityOff/> }
                                         </IconButton>
                                     </InputAdornment>
                                 }
-                                labelWidth={70}
+                                labelWidth = { 70 }
                             />
                         </FormControl>
                     </Grid>
                 </Grid>
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleClose} color="primary">
+                <Button
+                    onClick = { handleClose }
+                    color="primary"
+                >
                     Annuler
                 </Button>
-                <Button onClick={handleClick} color="primary">
+                <Button
+                    onClick = { handleClick }
+                    color="primary"
+                >
                     S'inscrire
                 </Button>
             </DialogActions>
-        </div>
+        </>
     )
 }
