@@ -20,7 +20,7 @@ import { AccountContext } from '../../Context/AccountContext'
 import TableRowEdit from '../../components/TableRowEdit/TableRowEdit';
 
 export default (props) => {
-    const { row, setRows, index } = props
+    const { row, setRows } = props
     const [ dataUser, setDataUser ] = useState(row)
     const { sessionData } = useContext( AccountContext );
     const xsrf =  sessionData[ 'login' ] ? sessionData[ "xsrf-token" ] : false

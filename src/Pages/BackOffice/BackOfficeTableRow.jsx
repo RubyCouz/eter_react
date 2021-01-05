@@ -48,12 +48,10 @@ export default function BackOfficeTableRow( props ) {
     <>
       <TableRow
         hover
-        role="checkbox"
-        aria-checked={isItemSelected}
-        tabIndex={-1}
-        key={row.id}
-        
-        selected={isItemSelected}
+        aria-checked = { isItemSelected }
+        tabIndex = {-1}
+        key = { row.id }
+        selected = { isItemSelected }
       >
         <TableCell padding="checkbox">
           <Checkbox
@@ -64,7 +62,7 @@ export default function BackOfficeTableRow( props ) {
         </TableCell>
         <TableCell>
           <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
-            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+            { open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon /> }
           </IconButton>
         </TableCell>
         <TableCell component="th" id={labelId} scope="row" padding="none">
@@ -73,18 +71,22 @@ export default function BackOfficeTableRow( props ) {
         <TableCell align="right">{row.userRole}</TableCell>
         <TableCell align="right">{row.userDate}</TableCell>
       </TableRow>
-      <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-          <Collapse in={open} timeout="auto" unmountOnExit>
-            <React.Suspense
-              fallback = { <div>Chargement...</div> }
-            >
-              <BackOfficeTableRowDetail
-                row = { row }
-                setRows = { setRows }
-                index = { index }
-              />
-            </React.Suspense>
+      <TableRow 
+        key = { row.id + "detail" }
+      >
+        <TableCell 
+          style = {{ paddingBottom: 0, paddingTop: 0 }}
+          colSpan = { 6 }
+        >
+          <Collapse
+            in= { open }
+            timeout = "auto"
+            unmountOnExit
+          >
+            <BackOfficeTableRowDetail
+              row = { row }
+              setRows = { setRows }
+            />
           </Collapse>
         </TableCell>
       </TableRow>
