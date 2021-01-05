@@ -15,7 +15,7 @@ import {
     Table,
     TableRow,
     TableSortLabel,
-
+    CircularProgress,
     Typography,
     Paper,
     Checkbox,
@@ -221,9 +221,9 @@ export default function EnhancedTable() {
                 {stableSort(rows, getComparator(order, orderBy))
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, index) => {
-                    //mise a jour longue
                     return (
-                      <BackOfficeTableRow 
+                      <BackOfficeTableRow
+                        key = { row.id }
                         row = { row }
                         setRows = { setRows }
                         index = { index }
@@ -234,15 +234,20 @@ export default function EnhancedTable() {
                   })
                 }
                 {emptyRows > 0 && (
-                  <TableRow style = { { height: 53 * emptyRows } }>
-                    <TableCell colSpan = { 6 } />
+                  <TableRow style = { { height: 62 * emptyRows } }>
+                      <TableCell 
+                        colSpan = { 6 }
+                        align = "center"
+                      >
+                        { emptyRows === rowsPerPage && <CircularProgress /> }
+                      </TableCell>
                   </TableRow>
                 )}
             </TableBody>
           </Table>
         </TableContainer>
         <TablePagination
-          rowsPerPageOptions = {[5, 10, 25, { label: 'All', value: -1 }]}
+          rowsPerPageOptions = { [5, 10, 25, { label: 'All', value: -1 }] }
           component = "div"
           count = { rows.length }
           rowsPerPage = { rowsPerPage }
