@@ -84,9 +84,10 @@ export default (props) => {
                 }
             }
 
-            oldData[index] = newDataRows
+            const searchElement = (element) => element.node.id === row.id
+            const index = oldData.findIndex(searchElement)
 
-            console.log("mise a jour")
+            index  > -1 && ( oldData[index] = newDataRows )            
 
             return oldData
         })
