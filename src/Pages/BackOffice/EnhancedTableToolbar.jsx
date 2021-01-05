@@ -1,7 +1,5 @@
-import 
-    React,{
-        useState,
-        useEffect,
+import React,{
+    useContext,
 } from 'react'
 import clsx from 'clsx'
 import { lighten, makeStyles } from '@material-ui/core/styles'
@@ -18,6 +16,8 @@ import {
 } from '@material-ui/icons';
 
 import Request from '../../Tools/Request/Request'
+
+import { AccountContext } from '../../Context/AccountContext'
 
 //Style de la toolbar
 const useToolbarStyles = makeStyles((theme) => ({
@@ -43,12 +43,38 @@ const useToolbarStyles = makeStyles((theme) => ({
 //La toolbar
 export default (props) => {
     const classes = useToolbarStyles();
-    const { selected } = props;
+    const { selected, xsrf } = props;
+    const { ModalAlertSetData } = useContext(AccountContext);
   
     const numSelected = selected.length
   
     const deleteButton = () =>{
-      console.log(selected)
+        selected.map( (userId) =>{
+            const query = { 
+                query : `
+                    mutation{ 
+                        deleteEterUser(
+                            input: {
+                                id: "${userId}"
+                            }
+                        )
+                        {
+                            eterUser{
+                                id
+                            }
+                        }
+                    }
+                `
+            }
+
+            Request( query, xsrf )
+            .then(function(result) {
+                ModalAlertSetData({
+                    severity: "success",
+                    data: <Typography>Le compte {result.data.deleteEterUser.eterUser.id} a était supprimé</Typography>
+                })
+            })
+        })
     }
 
     return (
