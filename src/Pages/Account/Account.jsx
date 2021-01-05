@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function Test() {
+export default function Account() {
 
   // Fonction pour calculer le temps entre deux date utiliser dans le template
   const time = (date) => {
@@ -72,6 +72,10 @@ export default function Test() {
               },
               dateInscr : {
                 nameColumn : "Date inscription",
+                modifiedValue : false,
+              },
+              "userLabels{edges{node{labelName}}}" : {
+                nameColumn : "test",
                 modifiedValue : false,
               },
             }
@@ -123,7 +127,6 @@ export default function Test() {
     setCurrentIndex(newValue);
   }
 
-
   const { sessionData } = useContext( AccountContext );
   const xsrf =  sessionData['login'] ? sessionData["xsrf-token"] : false
   const [ idUser ] = useState(sessionData["id"])
@@ -140,9 +143,6 @@ export default function Test() {
 
   // Toute les information du compte
   const [ data, setData ] = useState({})
-
-
-
 
   // Création des columns pour la requête GET
   const queryColumn = useMemo(
@@ -232,7 +232,7 @@ export default function Test() {
           tabsPanels.push(
             <TabPanel
               key = { keyObject }
-              currentIndex = { currentIndex }
+              value = { currentIndex }
               index = { parseInt( keyObject ) }
               data = { valueObject[ "content" ] }
               idUser = { idUser }
@@ -253,17 +253,17 @@ export default function Test() {
       <Box>
         <Grid
             container
-            direction="column"
-            justify="center"
-            alignItems="center"
+            direction = "column"
+            justify = "center"
+            alignItems = "center"
         >
             <Tabs
-              currentIndex = { currentIndex }
               onChange = { handleChange }
               aria-label = "Vertical tabs"
               className = { classes.tabs }
-              variant="scrollable"
-              scrollButtons="auto"
+              variant = "scrollable"
+              scrollButtons = "auto"
+              value = { currentIndex }
             >
               { tabs }
             </Tabs>

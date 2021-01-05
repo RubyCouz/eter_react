@@ -13,8 +13,8 @@ import {
 import TableRowEdit from '../../components/TableRowEdit/TableRowEdit';
   
 export default function TabPanel(props) {
-  const { currentIndex, index, data, idUser, defaultValue, setDefaultValue, ...other } = props;
-
+  // value index demandé / index l'index du panneau ...
+  const { value, index, data, idUser, defaultValue, setDefaultValue, ...other } = props;
 
   // Création du formulaire pour le rendu
   const form = useMemo(
@@ -42,12 +42,12 @@ export default function TabPanel(props) {
   return (
     <div
       role = "tabpanel"
-      hidden = { currentIndex !== index }
+      hidden = { value !== index }
       id = { `vertical-tabpanel-${index}` }
       aria-labelledby = { `vertical-tab-${index}` }
       { ...other }
     >
-      {currentIndex === index && (
+      {value === index && (
         <Box
           p = { 3 }
         >
