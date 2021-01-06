@@ -10,6 +10,7 @@ import {
   TableRow,
   TableCell,
   CircularProgress,
+  Chip,
 } from "@material-ui/core"
 
 import CreateIcon from '@material-ui/icons/Create';
@@ -142,11 +143,14 @@ export default function TableRowEdit(props) {
                 onChange = { changeField }
                 autoFocus
                 onBlur = { sendData }
-                onKeyDown={ handleKeyPress }
+                onKeyDown = { handleKeyPress }
                 size = "small"
               />
             : 
-              entryValue
+              Array.isArray(entryValue) ? 
+                entryValue.map( element => <Chip label={ element }/>)
+              :
+                <Typography>{ entryValue }</Typography> 
           :
             <CircularProgress size = { 15 }/>
         }
