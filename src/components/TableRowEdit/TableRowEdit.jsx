@@ -9,6 +9,7 @@ import {
   Typography,
   TableRow,
   TableCell,
+  CircularProgress,
 } from "@material-ui/core"
 
 import CreateIcon from '@material-ui/icons/Create';
@@ -108,16 +109,14 @@ export default function TableRowEdit(props) {
         })
         setEntryValue(defaultValue[nameQuery])
     })
-
-    
   }
   
   function handleKeyPress(e){
-    if(e.keyCode === 13){
+    if(e.keyCode === 13) {
       e.target.blur(); 
       //Write you validation logic here
     }
- }
+  }
 
   return (
     <TableRow
@@ -135,18 +134,21 @@ export default function TableRowEdit(props) {
         align = "right"
       >
         { 
-          showField ?
-            <TextField
-              fullWidth = { true }
-              value = { entryValue }
-              onChange = { changeField }
-              autoFocus
-              onBlur = { sendData }
-              onKeyDown={ handleKeyPress }
-              size = "small"
-            />
-          : 
-            entryValue
+          entryValue !== undefined ?
+            showField ?
+              <TextField
+                fullWidth = { true }
+                value = { entryValue }
+                onChange = { changeField }
+                autoFocus
+                onBlur = { sendData }
+                onKeyDown={ handleKeyPress }
+                size = "small"
+              />
+            : 
+              entryValue
+          :
+            <CircularProgress size = { 15 }/>
         }
       </TableCell>
       <TableCell
