@@ -74,11 +74,17 @@ export default function Account() {
                 nameColumn : "Date inscription",
                 modifiedValue : false,
               },
-              "userLabels{edges{node{labelName}}}" : {
-                nameColumn : "test",
+              userLabels : {
+                nameColumn : "Les labels",
                 modifiedValue : false,
+                content: {
+                  labelName: {
+                    nameColumn : "Label",
+                    modifiedValue : false,
+                  },
+                },
               },
-            }
+            },
         },
         1 : {
             name : "Données personnels",
@@ -150,7 +156,18 @@ export default function Account() {
       let queryColumnTemporary = "" ;
       for ( const value of Object.values( templateData[ "index" ] ) ) {
         for ( const [ key ] of Object.entries( value["content"] ) ) {
+          
           queryColumnTemporary += ` ${ key }`
+
+          if ( value["content"][key]["content"] !== undefined ) {
+            queryColumnTemporary += ` {edges{node{`
+
+            for ( const [subQueryName] of Object.entries( value["content"][key]["content"] ) ) {
+              queryColumnTemporary += ` ${subQueryName}`
+            }
+            
+            queryColumnTemporary += `}}}`
+          }
         }
       }
       return  queryColumnTemporary
@@ -175,17 +192,28 @@ export default function Account() {
 
       Request( query, xsrf )
       .then(function(result) {
-
         let tableResult = {}
         for ( const value of Object.values( templateData[ "index" ] ) ) {
           for ( const [ queryName ] of Object.entries( value["content"] ) ) {
-            const valueQuery =  result["data"]["eterUser"][queryName]
+            let valueQuery
+
+            if ( value["content"][queryName]["content"] !== undefined ) {
+              valueQuery = []
+
+              for ( const valueLabel of Object.values( result["data"]["eterUser"][queryName]["edges"] ) ) {
+                for ( const [subQueryName] of Object.entries( value["content"][queryName]["content"] ) ) {
+                  valueQuery.push(valueLabel["node"][subQueryName])
+                }
+              }
+
+            } else {
+              valueQuery =  result["data"]["eterUser"][queryName]
+            }
+
             tableResult[queryName] = valueQuery
           }
         }
-
         setData( oldData =>( {...oldData, ...tableResult } ) )
-
       })
     }, []
   )
