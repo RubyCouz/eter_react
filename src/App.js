@@ -7,6 +7,8 @@ import { AccountContext } from './Context/AccountContext';
 import ModalAlert from './components/ModalAlert/ModalAlert';
 import './App.css';
 import useCookiePlayload from "./Hook/useCookiePlayload"
+import { ApolloProvider } from '@apollo/client';
+import { client } from './GraphQL/Config'
 
 // import composants
 const Navbar = lazy( () => import('./Pages/Navbar/Navbar'));
@@ -79,19 +81,21 @@ function App() {
           setValue : setOpen
         }}
       />
-      <ThemeProvider theme={theme}>
-        <div className = { `App ${classes.root}` } >
-          <Router>
-            <Suspense fallback = { <CircularProgress /> } >     
-              <Navbar />
-              <div className = { classes.content } >
-                <div className = { classes.toolbar } />
-                <Routes />
-              </div>
-            </Suspense>
-          </Router>
-        </div>
-      </ThemeProvider>
+      <ApolloProvider client={client}>
+        <ThemeProvider theme={theme}>
+          <div className = { `App ${classes.root}` } >
+            <Router>
+              <Suspense fallback = { <CircularProgress /> } >     
+                <Navbar />
+                <div className = { classes.content } >
+                  <div className = { classes.toolbar } />
+                  <Routes />
+                </div>
+              </Suspense>
+            </Router>
+          </div>
+        </ThemeProvider>
+      </ApolloProvider>
     </AccountContext.Provider>
   );
 }
