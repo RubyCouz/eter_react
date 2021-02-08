@@ -15,14 +15,15 @@ const Navbar = lazy( () => import('./Pages/Navbar/Navbar'));
 
 const theme = createMuiTheme({
   palette: {
+    type: 'dark',
     primary: {
-      main: '#556cd6',
+      main: '#272725',
     },
     secondary: {
-      main: '#19857b',
+      main: '#1A8BCD',
     },
     background: {
-      default: '#fff',
+      default: '#272725',
     },
   },
 });
@@ -41,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
   },
   content: {
     flexGrow: 1,
-    padding: theme.spacing(3),
+    padding: theme.spacing(4, 0, 0 , 0)
   },
 }));
 

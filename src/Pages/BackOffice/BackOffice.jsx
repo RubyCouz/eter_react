@@ -19,6 +19,7 @@ import {
     Typography,
     Paper,
     Checkbox,
+    Grid,
 } from '@material-ui/core';
 
 import Request from '../../Tools/Request/Request'
@@ -54,8 +55,9 @@ function EnhancedTableHead(props) {
     onRequestSort(event, property);
   };
 
+    //className={ "margin-left": theme.spacing(7)} pour la table
   return (
-    <TableHead>
+    <TableHead> 
       <TableRow>
         <TableCell padding="checkbox">
           <Checkbox
@@ -96,11 +98,8 @@ function EnhancedTableHead(props) {
 
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    width: '100%',
-  },
   paper: {
-    width: '100%',
+    width: '75%',
     marginBottom: theme.spacing(2),
   },
   table: {
@@ -170,12 +169,14 @@ export default function EnhancedTable() {
       })
   },[ xsrf ])
 
+  //Bouton de trie
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
   };
 
+  //Selection de tout 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
       const newSelecteds = rows.map((n) => n.node.id);
@@ -198,9 +199,13 @@ export default function EnhancedTable() {
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
   return (
-    <div className={classes.root}>
+    <Grid
+      container
+      direction = "row"
+      justify = "center"
+    >
       <Paper className={classes.paper}>
-        <EnhancedTableToolbar selected={selected} />
+        <EnhancedTableToolbar selected = { selected }  xsrf = { xsrf } />
         <TableContainer>
           <Table
             className={classes.table}
@@ -256,6 +261,6 @@ export default function EnhancedTable() {
           onChangeRowsPerPage = { handleChangeRowsPerPage }
         />
       </Paper>
-    </div>
+    </Grid>
   );
 }

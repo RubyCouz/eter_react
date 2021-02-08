@@ -71,6 +71,7 @@ const useStyles = makeStyles((theme) => ({
     },
     drawerOpen: {
         width: drawerWidth,
+        background:'#27272580', //secondary color
         transition: theme.transitions.create('width', {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.enteringScreen,
@@ -82,10 +83,9 @@ const useStyles = makeStyles((theme) => ({
             duration: theme.transitions.duration.leavingScreen,
         }),
         overflowX: 'hidden',
-        width: theme.spacing(7) + 1,
-        [theme.breakpoints.up('sm')]: {
-            width: theme.spacing(9) + 1,
-        },
+        background:'transparent',
+        "border-right":'none',
+        width: theme.spacing(7),
     },
     toolbar: {
         display: 'flex',
@@ -95,12 +95,7 @@ const useStyles = makeStyles((theme) => ({
         // necessary for content to be below app bar
         ...theme.mixins.toolbar,
     },
-    button: {
-        color: 'white',
-        border: '1px solid white'
-    },
 }));
-
 
 export default function Navbar() {
     let location = useLocation();
@@ -161,24 +156,17 @@ export default function Navbar() {
                         container
                         direction="row"
                         justify="space-between"
-                        alignItems="baseline"
+                        alignItems="center"
                     >
-                        <Box>
-                            <Typography
-                                variant="h6"
-                                noWrap
-                            >
-                                EterelZ
-                            </Typography>
-                        </Box>
+
+                            <img src="./img/themes/logo.png" alt="Logo EterelZ" />
+
                         <Box
                             visibility = { userRole === "ROLE_ADMIN" ? "visible": "hidden"}
                         >
                             <NavLink to={"/admin"}>
                                 <Button
-                                    className={classes.button}
                                     variant="outlined"
-                                    color="primary"
                                     key={"BackOffice"}
                                 >
                                     Back-office
@@ -188,7 +176,9 @@ export default function Navbar() {
                        
                         <Box>
                             <ButtonGroup
-                                aria-label="outlined primary button group"
+                                color="secondary"
+                                variant="outlined"
+                                aria-label="outlined secondary button group"
                             > 
                                 <Box
                                     component = "span"    
@@ -196,36 +186,34 @@ export default function Navbar() {
                                 >
                                     <Button
                                         onClick = { sessionRemove }
-                                        className = { classes.button }
                                         display =  "none"
                                     >
                                         Déconnecter
                                     </Button>
                                 </Box>
-                                <NavLink
-                                    to = { userRole ? "/account" : path + "/login" }
+                                <Button
+                                    component={NavLink}
+                                    to={ userRole ? "/account" : path + "/login" }
                                 >
-                                    <Button
-                                        className={classes.button}
-                                    >
-                                        { userRole ? "Compte" : "Connexion" }
-                                    </Button>
-                                </NavLink>
+                                    { userRole ? "Compte" : "Connexion" }
+                                </Button>
                             </ButtonGroup>
                         </Box>
                     </Grid>
                 </Toolbar>
             </AppBar>
             <Drawer
+                elevation={0}
+                color="primary" 
                 variant="permanent"
-                className={
+                /*className={
                     clsx(classes.drawer, {
                         [classes.drawerOpen]: open,
                         [classes.drawerClose]: !open,
                     })
-                }
+                }*/
                 classes={{
-                    paper: clsx({
+                    paperAnchorDockedLeft: clsx({
                         [classes.drawerOpen]: open,
                         [classes.drawerClose]: !open,
                     }),
@@ -237,19 +225,27 @@ export default function Navbar() {
                     </IconButton>
                 </div>
                 <Divider/>
-                <List>
-                    <NavLink to="/" onClick={handleDrawerClose}>
-                        <ListItem button key={"Home"}>
-                            <ListItemIcon><HomeOutlinedIcon/></ListItemIcon>
-                            <ListItemText primary={"Home"}/>
-                        </ListItem>
-                    </NavLink>
-                    <NavLink to="/test" onClick={handleDrawerClose}>
-                        <ListItem button key={"Test"}>
-                            <ListItemIcon><RowingOutlinedIcon/></ListItemIcon>
-                            <ListItemText primary={"Test"}/>
-                        </ListItem>
-                    </NavLink>
+                <List color="secondary">
+                    <ListItem
+                        button
+                        key={"Home"}
+                        component={NavLink}
+                        to="/"
+                        onClick={handleDrawerClose}
+                    >
+                        <ListItemIcon><HomeOutlinedIcon/></ListItemIcon>
+                        <ListItemText color="secondary" primary="Home"/>
+                    </ListItem>
+                    <ListItem 
+                        button 
+                        key={"Test"}
+                        component={NavLink}
+                        to="/test" 
+                        onClick={handleDrawerClose}
+                    >
+                        <ListItemIcon><RowingOutlinedIcon/></ListItemIcon>
+                        <ListItemText primary={"Test"}/>
+                    </ListItem>
                 </List>
             </Drawer>
         </>

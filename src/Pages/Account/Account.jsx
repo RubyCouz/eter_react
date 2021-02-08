@@ -22,7 +22,6 @@ import { AccountContext } from '../../Context/AccountContext';
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
-    backgroundColor: theme.palette.background.paper,
     display: 'flex',
   }
 }));
@@ -66,7 +65,7 @@ export default function Account() {
                 nameColumn : "Description",
               },
               userDate : {
-                nameColumn : "Date de mise a jour du compte",
+                nameColumn : "Date de mise à jour du compte",
                 modifiedValue : false,
                 process: time,
               },
@@ -127,14 +126,14 @@ export default function Account() {
 
   const classes = useStyles();
 
+  //
   const [ currentIndex, setCurrentIndex]  = useState(0);
-
   const handleChange = (event, newValue) => { 
     setCurrentIndex(newValue);
   }
 
   const { sessionData } = useContext( AccountContext );
-  const xsrf =  sessionData['login'] ? sessionData["xsrf-token"] : false
+  const xsrf = sessionData['login'] ? sessionData["xsrf-token"] : false
   const [ idUser ] = useState(sessionData["id"])
 
 
